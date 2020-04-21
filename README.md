@@ -1,4 +1,6 @@
-# BlackfellShell - Python module runner & Implant management
+# BlackfellShell
+
+A Python module runner & Implant management tool.
 
 # What it do?
 
