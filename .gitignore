@@ -1,0 +1,12 @@
+*.pyc
+*.bs
+*.swp
+BS-loot/*
+archive/*
+archive
+*.bs
+bstest.py
+generated/*
+*.iso
+bshell/
+*.pem
