@@ -1,0 +1,25 @@
+mod_name : Persistance
+
+load_dir : resources/loaders/bs_tcp/persistance/
+
+help :
+  - - persist
+    - "Persist on the target machine (Windows and Linux only)"
+
+
+methods:
+  - name : persist
+    menu : False
+    agent : False
+    implant : implant/persist.py
+    help : "Persist on a Windows or Linux target.\n\n
+    [Windows]-\n\n
+    \tDEFAULT (no arguments) - persistence via logon registy key for user.\n
+    \t--mode -m <modename> : select persistence method, currently supports:\n
+    \t           run_key   : persist via registry key to run at user logon\n\n
+    [Linux]-\n\n
+    \tDEFAULT (no arguments) - aggressive persistence via per-minute crontab entry\n
+    \t--mode -m <modename> : select persistence method, currently supports:.\n
+    \t             cron    : persitence via crontab entry for the current user\n\n
+    \t--stealth -s : retry connection every 5 mins in 9-5 working hours\n
+    \t--aggresive -a : retry connection every minute"

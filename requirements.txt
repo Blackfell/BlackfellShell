@@ -1,0 +1,8 @@
+pyyaml
+py2exe
+pyinstaller
+pillow
+pyscreenshot
+packaging
+pynput
+pycryptodome

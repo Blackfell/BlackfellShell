@@ -1,0 +1,14 @@
+mod_name : Example
+
+load_dir : resources/loaders/bs_tcp/example/
+
+help :
+  - - test
+    - A Test function that executes in the menu, agent and implant, in turn.
+
+methods:
+  - name : test
+    menu : menu/test.py
+    agent : agent/test.py
+    implant : implant/test.py
+    help : "Test import funcitonality."

