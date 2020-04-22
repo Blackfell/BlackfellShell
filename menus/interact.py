@@ -175,7 +175,7 @@ class BSInteractMenu(base.BlackfellShell):
         for agent in self.active_agents:
             try:
                 agent.send_q.put(line)
-                time.sleep(0.5) #time to let the agent process
+                #time.sleep(0.5) #time to let the agent process
             except Exception as e:
                 bc.err_print("[!] ", "- Exception calling agent method {} on agent {}:\n\t{}".format(line, agent.name, e))
 
