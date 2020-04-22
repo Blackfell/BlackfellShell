@@ -10,3 +10,4 @@ generated/*
 *.iso
 bshell/
 *.pem
+*__pycache__*

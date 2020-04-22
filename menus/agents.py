@@ -10,6 +10,8 @@ from menus import interact as intr
 from menus import modules as mod
 
 class BSAgentsMenu(base.BlackfellShell):
+    """Overridden base menu in the agent configuration and management context"""
+
     def __init__(self, parent_menu):
         super(BSAgentsMenu, self).__init__()
         append = " : " + bc.green_format(bc.bold_format("Agents "), "> ")
@@ -21,9 +23,15 @@ class BSAgentsMenu(base.BlackfellShell):
 
     #List commands
     def do_list(self, line):
+        """Overriden version of the base list function, this version
+        simply excludes the listing of listeners since we're in the
+        agent menu now."""
+
         self.root_menu.list_agents()
 
     def help_list(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','List Agents only cos we\'re in agents now.')
         print('Example:')
@@ -33,7 +41,10 @@ class BSAgentsMenu(base.BlackfellShell):
 
     #Kill commands
     def do_kill(self, line):
-        if not line:
+        """Overridden version of the base kill function, this version
+        only kills agents since we're in the agent menu now."""
+
+        if not line or line == "*":
             input_str = bc.warn_format("[!]", " Do you want to kill all agents? [Y/n]:")
             if input(input_str.format(line)).lower() not in ['y', 'yes', 'ye']:
                 return
@@ -46,6 +57,8 @@ class BSAgentsMenu(base.BlackfellShell):
                     bc.warn("Agent not found, not terminating.")
 
     def help_kill(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Kill an agent.')
         print('Example:')
@@ -53,35 +66,15 @@ class BSAgentsMenu(base.BlackfellShell):
         print("")
 
     def complete_kill(self, text, line, begidx, endidx):
+        """Function to return all active agents."""
+
         return [i for i in self.enum_agents() if i.startswith(text)]
 
-    '''
-    def enum_agents(self):
-        _AVAILABLE_LISTS = []
-        for l in self.root_menu.listeners:
-            for a in l.agent_list:
-                _AVAILABLE_LISTS.append(a.name)
-        return [i for i in _AVAILABLE_LISTS if i.startswith(text)]
-    '''
-
-    #Info commands
-    def do_info(self, line):
-        print("")
-        bc.blue_print("[-] ", "Showing info for agent: {}\n".format(line))
-
-    def help_info(self):
-        print("")
-        bc.blue_print('[-] ','Show information on an agent.')
-        print('Example:')
-        print('\tinfo Agent-2')
-        print("")
-
-    def complete_info(self, text, line, begidx, endidx):
-        _AVAILABLE_LISTS = ('TODO - proper dynamic agent completion')
-        return [i for i in _AVAILABLE_LISTS if i.startswith(text)]
-
-    #Activeate commands
+    #Activeate commands - TODO - change this from a variable to Event()
     def do_activate(self, line):
+        """Activates agents, by setting an active flag. Interact commands
+        will start an interaction with any agents that have been activated."""
+
         act = "*" if line == "" else line
         bc.info("Activating: {}".format(act))
         for l in self.root_menu.listeners:
@@ -93,6 +86,8 @@ class BSAgentsMenu(base.BlackfellShell):
                     pass
 
     def help_activate(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Activate an agent, so that it can be interacted with.')
         print('Example:')
@@ -100,10 +95,15 @@ class BSAgentsMenu(base.BlackfellShell):
         print("")
 
     def complete_activate(self, text, line, begidx, endidx):
+        """Function to return all agents associated with the shell."""
+
         return [i for i in self.enum_agents() if i.startswith(text)]
 
     #Deactivate commands
     def do_deactivate(self, line):
+        """Unsets the active flag in a given agent, so that when interact
+        starts, this agent isn't included in the interaction."""
+
         act = "*" if line == "" else line
         bc.info("Deactivating: {}".format(act))
         for l in self.root_menu.listeners:
@@ -115,6 +115,8 @@ class BSAgentsMenu(base.BlackfellShell):
                     pass
 
     def help_deactivate(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Deactivate an agent, so that it can be interacted with.')
         print('Example:')
@@ -122,10 +124,15 @@ class BSAgentsMenu(base.BlackfellShell):
         print("")
 
     def complete_deactivate(self, text, line, begidx, endidx):
+        """Function to return all activated agents in this menu."""
+
         return [i for i in self.enum_agents() if i.startswith(text)]
 
     #Interact commands
     def do_interact(self, line):
+        """Opens an interact menu and starts an interactive interpreter with
+        all agents whose active flag is set."""
+
         if not line:
             agents = []
             for l in self.root_menu.listeners:
@@ -145,71 +152,42 @@ class BSAgentsMenu(base.BlackfellShell):
 
 
     def help_interact(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Interact with all activated agents.')
         print("")
 
     def complete_interact(self, text, line, begidx, endidx):
+        """Function to return all activated agents in this menu."""
+
         return [i for i in self.enum_agents() if i.startswith(text) ]
-
-    def do_use(self, line):
-        cmd, args, line = self.parseline(line)
-        bc.blue_print("[-] ", "Using module:  {}".format(line))
-        #Concatenate the use path (from base menu for modules, with the selected module name
-        module_path = self.use_path + line
-        #Handle calling bad modules by accident
-        self.module_menu = mod.BSUseModuleMenu(self, module_path)
-        self.module_menu.cmdloop()
-        try:
-            #module_menu = mod.BSUseModuleMenu(self, module_path)
-            #module_menu.cmdloop()
-            pass
-        except Exception as e:
-            bc.err_print("[!] ", "- Exception calling module, is this a real module? Check module guidance.\n\t{}".format(e))
-
 
     ############## SUBMENU STUFF ###################
 
     #Listeners submenu
     def do_listeners(self, line):
+        """Switch to listeners menu, to allow listener configuration."""
+
         print("")
         lnr = lnrs.BSListenersMenu(self)
         lnr.cmdloop()
         return True
 
     def help_listeners(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Switch to a Listener context menu, to set up your listeners.')
         print("")
 
-    #Agents Submenu
-    #def do_agents(self, line):
-    #    pass
-
-    #Payloads submenus
-    def do_payloads(self, line):
-        print("")
-        bc.blue_print("[-] ", "Would now switch to Payloads  menu")
-        print("")
-        #pld = BlackfellShellPayloads()
-        #pld.cmdloop()
-
-    def help_payloads(self):
-        print("")
-        bc.blue_print('[-] ','Switch to a Payloads context menu, to generate listeners or implants.')
-        print("")
-
-    #TODO - reload modules
-
-
     ################# UTILS ########################
-
-
 
     #Inherit shell, post_loop,  default
 
     def do_back(self, line):
         'Exit this submenu - back to main menu.'
+
         return True
 
 

@@ -20,9 +20,7 @@ from menus import base
 class BSMainMenu(base.BlackfellShell):
     def __init__(self):
         super().__init__()
-        #menu.BlackfellShell.__init__(self)
         self.prompt = "BS > "
-        self.all_the_things = self.update_ordnance()
         self.intro = self.generate_banner()
         self.root_menu = self
         self.listeners = []
@@ -46,6 +44,8 @@ class BSMainMenu(base.BlackfellShell):
 
     #Set commands
     def do_set(self, line):
+        """Setting of a global option associated with the root menu."""
+
         option, value, line = self.parseline(line)
         if not option in self.global_options:
             bc.warn_print("[!] ", "- {} not a valid option!".format(option))
@@ -54,6 +54,8 @@ class BSMainMenu(base.BlackfellShell):
             bc.blue_print("[-] ", "{} set to: {}".format(option, value))
 
     def help_set(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Set global options and default values.')
         print('Example:')
@@ -63,6 +65,8 @@ class BSMainMenu(base.BlackfellShell):
         print("")
 
     def complete_set(self, text, line, begidx, endidx):
+        """Function to return settings matches for this command."""
+
         _AVAILABLE_LISTS = list(self.global_options.keys())
         return [i for i in _AVAILABLE_LISTS if i.startswith(text)]
 
@@ -70,6 +74,8 @@ class BSMainMenu(base.BlackfellShell):
 
     #Info commands
     def do_info(self, line):
+        """Show global settings associted with the root menu"""
+
         info_list=[]
         for option, value in self.global_options.items():
             default = self.defaults[option] if option in self.defaults else None
@@ -84,12 +90,16 @@ class BSMainMenu(base.BlackfellShell):
         print("")
 
     def help_info(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Show info on global defaults, not required, but useful.')
         print("")
 
     #Reset commands
     def do_reset(self, line):
+        """reset a global option back to the default"""
+
         try:
             self.global_options[line] = self.defaults[line]
             #If we're resetting keys, also check & generate if needed
@@ -99,6 +109,8 @@ class BSMainMenu(base.BlackfellShell):
             bc.err_print("[!] ", "- Exception when setting {} :\n\t{}".format(line, e))
 
     def help_reset(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Reset a global option.')
         print('Example:')
@@ -107,10 +119,15 @@ class BSMainMenu(base.BlackfellShell):
         print("")
 
     def complete_reset(self, text, line, begidx, endidx):
+        """Function to return settings matches for this command."""
+
         _AVAILABLE_LISTS = list(self.global_options.keys())
         return [i for i in _AVAILABLE_LISTS if i.startswith(text)]
 
     def do_use(self, line):
+        """select and initialise a BS module, will find module specs
+        and load the associated python file for configuration."""
+
         cmd, args, line = self.parseline(line)
         bc.blue_print("[-] ", "Using module:  {}".format(line))
         #Concatenate the use path (from base menu for modules, with the selected module name
@@ -126,54 +143,45 @@ class BSMainMenu(base.BlackfellShell):
             bc.err_print("[!] ", "- Exception calling module, is this a real module? Check module guidance.\n\t{}".format(e))
 
 
-
-
     ################## SUBMENUS #######################
 
     #Listeners submenu
     def do_listeners(self, line):
+        """Switch to listeners menu, to allow listener only configuration."""
+
         print("")
         self.lnr = lnrs.BSListenersMenu(self)
         self.lnr.cmdloop()
 
     def help_listeners(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Switch to a Listener context menu, to set up your listeners.')
         print("")
 
     #Agents Submenu
     def do_agents(self, line):
+        """Switch to agents menu, to allow agent only configuration."""
+
         print("")
         self.agt = agts.BSAgentsMenu(self)
         self.agt.cmdloop()
 
     def help_agents(self):
+        """Function to print help for this specific command."""
+
         print("")
         bc.blue_print('[-] ','Switch to an Agents context menu, to manage your active agents.')
         print("")
-
-    #Payloads submenus
-    def do_payloads(self, line):
-        print("")
-        bc.blue_print("[-] ", "Would now switch to Payloads  menu")
-        print("")
-        #pld = BlackfellShellPayloads()
-        #pld.cmdloop()
-
-    def help_payloads(self):
-        print("")
-        bc.blue_print('[-] ','Switch to a Payloads context menu, to generate listeners or implants.')
-        print("")
-
-
-    #TODO - reload modules
-
 
     ################# UTILS ########################
 
     #Inherit - shell  & default
 
     def get_network(self):
+        """Get network interface information to auto-populate listener settings"""
+
         test_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             test_sock.connect(("1.1.1.1", 1))
@@ -185,6 +193,8 @@ class BSMainMenu(base.BlackfellShell):
             test_sock.close()
 
     def generate_key(self):
+        """Generate an RSA key for the shell."""
+
         q = "No valid key found at: {}, create one? [y/n] : ".format(self.global_options['RSA_KEY'])
         if input(q).lower() not in ['y', 'yes', 'ye']:
             bc.err("Encryption operations may fail, try setting RSA key in home menu.")
@@ -194,6 +204,9 @@ class BSMainMenu(base.BlackfellShell):
                 f.write(key.export_key('PEM'))
 
     def check_key(self):
+        """Check that the shell has an RSA key that can be used in
+        future functionality"""
+
         if not os.path.exists(self.global_options['RSA_KEY']):
             self.generate_key()
         else:
@@ -205,18 +218,10 @@ class BSMainMenu(base.BlackfellShell):
                     bc.err("Key: {} not valid : {}".format(self.global_options['RSA_KEY'], e))
                     self.generate_key()
 
-    def update_ordnance(self):
-        pass
-        '''
-        #Read in available resources at runtime
-        all_the_things = []
-        with open ("./use_opts.txt") as user_opts:
-            for opt in user_opts:
-                all_the_things.append(opt.rstrip())
-        return all_the_things
-        '''
-
     def generate_banner(self):
+        """Return ascii art banner, eventually will return random,
+        for now just returns one main banner, until more are made"""
+
         b1 =  """
                              /\\
                             /^^\_

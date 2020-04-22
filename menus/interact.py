@@ -14,6 +14,8 @@ from common import bcolors as bc
 from common import importer
 
 class BSInteractMenu(base.BlackfellShell):
+    """Main menu class, inherited for agent interaction specifically"""
+
     def __init__(self, parent_menu, agents):
         super(BSInteractMenu, self).__init__()
         self.root_menu = parent_menu.root_menu
@@ -30,12 +32,15 @@ class BSInteractMenu(base.BlackfellShell):
         self.get_load_path()
         self.check_loaded()
         append = " : " + bc.green_format(bc.bold_format("Interacting - {} Agents ".format(len(self.active_agents))), "> ")
-        self.prompt = parent_menu.prompt[:2] + append
+        self.base_prompt = parent_menu.prompt[:2] + append
+        self.prompt = self.base_prompt
 
 
     ################# INIT METHODS ###################
 
     def get_load_path(self):
+        """Get the load path for each agent, checking that they don't clash"""
+
         last_lp = None
         lp = None
         for agent in self.active_agents:
@@ -48,6 +53,8 @@ class BSInteractMenu(base.BlackfellShell):
 
     #Check loaded module status and populate internal variables
     def check_loaded(self):
+        """Check all loaded commands and methods, reporting on any clashes"""
+
         try:
             ##print("Checking loaded")
             loaded_methods = {}
@@ -75,6 +82,8 @@ class BSInteractMenu(base.BlackfellShell):
             bc.err_print("[!] ", "Error checking loaded modules, are some agents missing modules?")
 
     def get_active_agents(self, agents):
+        """Given an agent list, add to class variable."""
+
         for l in self.root_menu.listeners:
             for a in l.agent_list:
                 if a in agents:
@@ -84,13 +93,21 @@ class BSInteractMenu(base.BlackfellShell):
 
     #Info commands
     def do_info(self, line):
+        """Simply list out agents currently interacted on."""
+
         for agent in self.active_agents:
             bc.blue_print("[-] ", "Acting on agent: {}, which is alive: {}".format(agent.name, agent.is_alive()))
 
     def help_info(self):
+        """Function to print help for this specific command."""
+
         bc.blue_print('\n[-] ','Show information on current agents.\n')
 
     def do_load(self, line):
+        """Load a module into agent, implant or menu, based off module spec
+        files, which are found and loaded into the menu, agent and implant
+        as needed."""
+
         if not line:
             bc.warn_print("[!] ", "No module specified.")
             return
@@ -121,10 +138,10 @@ class BSInteractMenu(base.BlackfellShell):
             bc.err_print("[!] ", "- Exception loading menu module:\n{}".format(e))
         finally:
             self.check_loaded()
-            pass
-
 
     def complete_load(self, text, line, begidx, endidx):
+        """return module spec files that can be loaded into the active agents"""
+
         text = self.load_path + text
         if os.path.isdir(text):
             sm = base.scrub_matched(glob.glob(os.path.join(text, '*')), len(self.load_path))
@@ -135,6 +152,9 @@ class BSInteractMenu(base.BlackfellShell):
 
 
     def do_help(self, line):
+        """Function to print help for this specific command."""
+
+
         if line in self.method_help.keys():
             bc.blue_print("\n[-] ",  self.method_help[line])
             print("")
@@ -149,6 +169,9 @@ class BSInteractMenu(base.BlackfellShell):
 
 
     def default(self, line):
+        """Gets called if no agent method is loaded, will send command
+        down to implant for processing."""
+
         for agent in self.active_agents:
             try:
                 agent.send_q.put(line)
@@ -161,6 +184,9 @@ class BSInteractMenu(base.BlackfellShell):
 
     #Module loading method helpers
     def load_methods(self, mod_spec):
+        """Actually does the loading of menu methods to the interact menu.
+        Not yet really used, but may develop menu methods in future."""
+
         for method in (i for i in mod_spec['methods'] if i['menu']):
             import_dict = {method['name'] : ''}
             filename = mod_spec['load_dir'] + method['menu']
@@ -179,6 +205,9 @@ class BSInteractMenu(base.BlackfellShell):
 
     #Inherit shell, post_loop,
     def print_loaded_methods(self):
+        """Rationalises and prints methods loaded into the agents
+        REports on any descrepancies to the user between agents."""
+
         bc.green_print("[-] ", "Menu options:\n")
         format_string = "\t{:<15} {:<50}"
         underline = "\t" + "=" * 70
@@ -198,6 +227,9 @@ class BSInteractMenu(base.BlackfellShell):
         print("")
 
     def completenames(self, text, *ignored):
+        """Returns all available methods, be they menu, agent or
+        implant methods, to allow tab completion."""
+
         #Inherit from parent class, but not kill, list or sleep
         blacklist_methods = ['kill', 'list', 'sleep']
         a = super().completenames(text, *ignored)
@@ -225,19 +257,28 @@ class BSInteractMenu(base.BlackfellShell):
     #Because the interact menu is speacial :)
 
     def do_list(self,line):
+        """Alias for info to show agents acting on."""
+
         #In case someone does it out of habit!
         self.do_info(line)
 
     def do_sleep(self, line):
+        """Override the menu sleep method and send sleep to the implant
+        to allow implant sleep processing."""
+
         self.default('sleep ' + line)
 
     def do_kill(self, line):
+        """Override the menu kill method to send kill to the implant
+        for processing."""
+
         self.default('kill ' + line)
 
     def do_shell(self, line):
-        #OVerride, we now want shell to do the default menu behaviour, not execute local shell
-        self.default('shell ' + line)
+        """Override the inherited shell method, we now want shell to
+        do the default menu behaviour, not execute local shell"""
 
+        self.default('shell ' + line)
 
 
 def main():

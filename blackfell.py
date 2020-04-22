@@ -8,22 +8,24 @@ import threading
 import time
 import queue
 
+from pynput import keyboard
+
 from menus import home
-#import menus
 from common import bcolors as bc
 
 def SigintHandler(SIG, FRM):
     print("^C")
 
 def get_args():
+    """Get arguments for the main CLI tool, blackfell shell"""
     parser = argparse.ArgumentParser()
-    #group = parser.add_mutually_exclusive_group()
-    #group.add_argument("-H", "--LHOST", type = str, help = "LHOST halue to set")
     parser.add_argument("-r", "--resource-file", type = str, help = "Run the Blackfell Shell from a resource file.")
     parser.add_argument("-y", "--noconfirm", action="store_true", help = "Don't prompt for privilege confirmation on startup.")
     return parser.parse_args()
 
 def check_root(no_confirm):
+    """Check user privs (Linux only) and prompt user that they may want to
+            elevate to enable certain networking stuff"""
     decision = ''
     if os.getuid() != 0 and not no_confirm:
         bc.warn_print("[!] ", "- You are not running as root, you may not be able to do certain actions, e.g. bind to low ports.")
@@ -35,6 +37,7 @@ def check_root(no_confirm):
             pass
 
 def main():
+    """Function that runs the Blackfell Shell C2, including setting up modules etc."""
     args = get_args()
     check_root(args.noconfirm)
 
@@ -49,21 +52,22 @@ def main():
     if args.resource_file:
         #Declare to interpreter that we're running a resource file
         bs.q['read'].put("RESOURCE")
-        #time.sleep(0.1)
-
         #Run interpreter as a thread
         t = threading.Thread(target = bs.cmdloop)
         t.start()
-        #time.sleep(0.1)
-
-        #bs.q['read'].put("RESOURCE")
-        #Declare to interpreter that we're running a resource file
-        #bs.q['read'].put("RESOURCE")
         with open( args.resource_file, 'r') as f:
-            #Pipe commands via stdin, can't use standard run utils because nested interpreters
+            """Pipe commands via stdin, can't use standard run utils because
+            we're using nested interpreters"""
             sys.stdin = f
+            """Stdin doesn't reassign properly until a keypress don't ask me
+            why it just doesn't OK? This is a workaround to get the interpreter
+            to start. If it's stupid and it works, it's not stupid. Mostly."""
+            kbd = keyboard.Controller()
+            kbd.press(keyboard.Key.enter)
+            kbd.release(keyboard.Key.enter)
+            #Read all the lines of resource file, then back to normal
             while True:
-                #time.sleep(0.1)
+                #Now check if resource file done and if so, reset stdin
                 if not bs.q['write'].empty() and bs.q['write'].get() == "DONE":
                     bc.green_print("[+] ", " - Resource file complete.")
                     sys.stdin=sys.__stdin__

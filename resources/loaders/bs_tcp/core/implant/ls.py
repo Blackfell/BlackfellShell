@@ -15,7 +15,6 @@ def list_dir(dropper, args):
         #Handle file size
         st = filestat(args + '/' + i)
         size = st[6]
-        print("DEBUG - RAW SIZE - ".format(size))
         modified = st[7]
         if size/1000000000 >= 1:
             prnt_size = '{}G'.format(round((size/1000000000.0), 1))
@@ -31,7 +30,6 @@ def list_dir(dropper, args):
         t = str(time.month) + '   ' + str(time.day) + '   ' + str(time.year) + '\t'
 
         #Handle file modes
-        print("HANDLING MODES")
         mode = ''
         mode += 'd' if stat.S_ISDIR(st.st_mode) else '-'
         mode += 'r' if st.st_mode & stat.S_IRUSR == stat.S_IRUSR else '-'

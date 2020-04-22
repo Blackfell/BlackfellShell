@@ -11,6 +11,8 @@ from menus import agents as agts
 from menus import modules as mod
 
 class BSListenersMenu(base.BlackfellShell):
+    """Overridden base menu class """
+
     def __init__(self, parent_menu):
         super(BSListenersMenu, self).__init__()
         append = " : " + bc.green_format(bc.bold_format("Listeners "), "> ")
@@ -76,19 +78,6 @@ class BSListenersMenu(base.BlackfellShell):
     def help_agents(self):
         print("")
         bc.blue_print('[-] ','Switch to an Agents context menu, to manage your active agents.')
-        print("")
-
-    #Payloads submenus
-    def do_payloads(self, line):
-        print("")
-        bc.blue_print("[-] ", "Would now switch to Payloads  menu")
-        print("")
-        #pld = plds.BSPayloadsMenu()
-        #pld.cmdloop()
-
-    def help_payloads(self):
-        print("")
-        bc.blue_print('[-] ','Switch to a Payloads context menu, to generate listeners or implants.')
         print("")
 
     def do_use(self, line):

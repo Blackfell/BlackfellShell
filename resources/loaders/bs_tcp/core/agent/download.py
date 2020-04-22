@@ -36,22 +36,22 @@ def main(agent, file = None):
                     #We're non-blocking, so there may be empty chunks
                     continue
                 if b'File not found' in chunk:
-                    bc.err('Unable to download, file may not exist.')
+                    bc.err('{} unable to download, {} file may not exist.'.format(agent.name, file))
                     return
                 elif not gotsz:
                     size = float(chunk.decode()[8:])
                     #Get size to print:
                     if size/1000000000 >= 1:
-                        prnt_size = '{} Gb'.format(round((size/1000000000.0), 1))
+                        prnt_size = '{} Gb'.format(round((size/1024000000.0), 1))
                     elif size/1000000 >= 1:
-                        prnt_size = '{} Mb'.format(round((size/1000000.0), 1))
+                        prnt_size = '{} Mb'.format(round((size/1024000.0), 1))
                     elif size/1000 >= 1:
-                        prnt_size = '{} Kb'.format(round((size/1000.0), 1))
+                        prnt_size = '{} Kb'.format(round((size/1024.0), 1))
                     else:
                         prnt_size = '{} byte'.format(size)
                     #Now print it
                     print("")   #Neaten output
-                    bc.info("{} downloading {} encoded file.".format(agent.name, prnt_size))
+                    bc.info("{} downloading {} data.".format(agent.name, prnt_size))
                     gotsz = True
                 elif chunk.endswith(b'<BSEOF>'):
                     chunk = chunk[:-7]
@@ -63,7 +63,12 @@ def main(agent, file = None):
                     tot_bytes += len(chunk)
                     completion = (tot_bytes/size)*100
                     if round(completion,0) - round(last_completion,0) >= 1.0:
-                        print("{}% downloaded.".format(int(round(completion, 0))))
+                        #print("{}% downloaded.".format(int(round(completion, 0))))
+                        #print('{} downloaded {}[%d%%]\r'%int(round(completion, 0)), end="")
+                        print('{} downloaded {}%\r'.format(
+                                bc.blue_format("[+] ", '- ' + agent.name),int(
+                                round(completion, 0))), end="")
+
                         #print("Chunks : {}, tot_bytes : {}".format(count, tot_bytes))
                     last_completion = completion
 
@@ -85,6 +90,6 @@ def main(agent, file = None):
             try:
                 dest.write(degzip(b64decode(src.read())))
                 print("")
-                bc.success('{} - transfer completed : {}'.format(agent.name, file_name), True)
+                bc.success('Download complete: {}'.format(file_name), True)
             except Exception as e:
                 bc.err("Couldn't decode and decompress file : {}".format(e))
