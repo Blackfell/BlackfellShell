@@ -8,6 +8,7 @@ import threading
 import time
 import queue
 import ctypes
+import colorama
 
 from pynput import keyboard
 
@@ -29,7 +30,7 @@ def check_root(no_confirm):
             elevate to enable certain networking stuff"""
     decision = ''
     if sys.platform == 'win32':
-        if not ctypes.windll.shell32.IsUserAnAdmin() != 0:
+        if not ctypes.windll.shell32.IsUserAnAdmin() != 0 and not no_confirm:
             bc.warn_print("[!] ", "- You are not running as Admin, you may not be able to do certain actions, e.g. bind to low ports.")
             while decision != 'y' and decision != 'n':
                 decision = input("Do you want to continue anyway? [y/n]:").lower()
@@ -51,6 +52,8 @@ def check_root(no_confirm):
 
 def main():
     """Function that runs the Blackfell Shell C2, including setting up modules etc."""
+
+    colorama.init()     #Ansi escape codes in Windows!
     args = get_args()
     check_root(args.noconfirm)
 
