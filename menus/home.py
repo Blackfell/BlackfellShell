@@ -8,6 +8,7 @@ import readline
 import socket
 import time
 import signal
+import re
 
 from Crypto.PublicKey import RSA
 
@@ -133,12 +134,9 @@ class BSMainMenu(base.BlackfellShell):
         #Concatenate the use path (from base menu for modules, with the selected module name
         module_path = self.use_path + line
         #Handle calling bad modules by accident
-        self.module_menu = mod.BSUseModuleMenu(self, module_path)
-        self.module_menu.cmdloop()
         try:
-            #module_menu = mod.BSUseModuleMenu(self, module_path)
-            #module_menu.cmdloop()
-            pass
+            module_menu = mod.BSUseModuleMenu(self, module_path)
+            module_menu.cmdloop()
         except Exception as e:
             bc.err_print("[!] ", "- Exception calling module, is this a real module? Check module guidance.\n\t{}".format(e))
 

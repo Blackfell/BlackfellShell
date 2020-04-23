@@ -1,4 +1,6 @@
 def do_test(self, line):
+    """example function to say hello in the menu"""
+    
     greet = 'World' if line == '' else line
     print("Hello, {}, you're in the menu.".format(greet))
     for agent in self.active_agents:

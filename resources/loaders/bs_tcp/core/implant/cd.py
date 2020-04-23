@@ -1,6 +1,8 @@
 from os import chdir, getcwd
 
 def main(dropper, args=None):
+    """Change directories safely"""
+
     if args:
         try:
             if '~' in args:

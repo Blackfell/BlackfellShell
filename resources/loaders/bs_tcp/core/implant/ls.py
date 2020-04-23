@@ -8,6 +8,9 @@ from os import stat as filestat
 from sys import platform
 
 def list_dir(dropper, args):
+    """list a directory, giving verbose, human friendly and Platform
+    agnostic output"""
+
     listing = []
     items = listdir(args)
     items.sort()
@@ -63,6 +66,8 @@ def list_dir(dropper, args):
     dropper.send("Directory listing of {} :\n{}".format(args, ''.join(listing)))
 
 def main(dropper, args=None):
+    """decide what directory to list and call list for it"""
+
     if args:
         try:
             if '~' in args:

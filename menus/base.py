@@ -165,6 +165,8 @@ class BlackfellShell(cmd.Cmd):
 
     #Module menu implementation menu implementation
 
+    #No sue command because we don't want it in all menus
+
     def help_use(self):
         """Function to print help for this specific command."""
 

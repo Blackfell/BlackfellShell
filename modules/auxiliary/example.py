@@ -4,6 +4,8 @@ from common import bcolors as bc
 from common import module as mod
 
 class BSModule(mod.BSModule):
+    """BShell module class, inherited for all modules run via BShell"""
+
     def __init__(self, parent_menu):
         mod.BSModule.__init__(self)
         #put YOUR attributes here
@@ -22,6 +24,9 @@ class BSModule(mod.BSModule):
 
 
     def run(self):
+        """Main module code, called when the module is executed
+        This module prints user provided messages to the console"""
+
         bc.success("Print incoming!")
         #Override with what to do with this class when it runs
         for time in range(self.options['num_prints']['value']):
@@ -44,6 +49,9 @@ class BSModule(mod.BSModule):
 
 
     def setup(self):
+        """Configures and tests the module, anything that sanity checks
+        user input can be put in here"""
+
         #Override this with any pre-module tests you need
         acceptable_colors=['red', 'orange', 'blue', 'green', None]
         if self.get_option('color') not in acceptable_colors:

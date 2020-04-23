@@ -8,6 +8,8 @@ from gzip import decompress as degzip
 from common import bcolors as bc
 
 def parse_args(agent, args):
+    """PArse CLI arguments"""
+
     #Initial argument setup
     show = None
     settings = {}
@@ -27,6 +29,8 @@ def parse_args(agent, args):
     return settings
 
 def main(agent, args=None):
+    """Order and receive screenshots from dropper, displays if requested"""
+
     try:
         settings = parse_args(agent, args)
         if not settings:
