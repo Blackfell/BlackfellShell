@@ -7,6 +7,7 @@ import argparse
 import threading
 import time
 import queue
+import ctypes
 
 from pynput import keyboard
 
@@ -24,17 +25,29 @@ def get_args():
     return parser.parse_args()
 
 def check_root(no_confirm):
-    """Check user privs (Linux only) and prompt user that they may want to
+    """Check user privs and prompt user that they may want to
             elevate to enable certain networking stuff"""
     decision = ''
-    if os.getuid() != 0 and not no_confirm:
-        bc.warn_print("[!] ", "- You are not running as root, you may not be able to do certain actions, e.g. bind to low ports.")
-        while decision != 'y' and decision != 'n':
-            decision = input("Do you want to continue anyway? [y/n]:").lower()
-        if decision == 'n':
-            sys.exit(0)
-        else:
-            pass
+    if sys.platform == 'win32':
+        if not ctypes.windll.shell32.IsUserAnAdmin() != 0:
+            bc.warn_print("[!] ", "- You are not running as Admin, you may not be able to do certain actions, e.g. bind to low ports.")
+            while decision != 'y' and decision != 'n':
+                decision = input("Do you want to continue anyway? [y/n]:").lower()
+            if decision == 'n':
+                sys.exit(0)
+            else:
+                pass
+    else:
+        if os.getuid() != 0 and not no_confirm:
+            bc.warn_print("[!] ", "- You are not running as root, you may not be able to do certain actions, e.g. bind to low ports.")
+            while decision != 'y' and decision != 'n':
+                decision = input("Do you want to continue anyway? [y/n]:").lower()
+            if decision == 'n':
+                sys.exit(0)
+            else:
+                pass
+
+
 
 def main():
     """Function that runs the Blackfell Shell C2, including setting up modules etc."""

@@ -6,3 +6,4 @@ pyscreenshot
 packaging
 pynput
 pycryptodome
+pyreadline
