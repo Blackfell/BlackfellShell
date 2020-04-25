@@ -261,6 +261,16 @@ class BlackfellShell(cmd.Cmd):
         except Exception as e:
             bc.warn_print("[!] ", "Could not sleep for {} seconds. Exception:\n{}".format(iline, e))
 
+    def do_echo(self,line):
+        """Echo a command back, typey style usually used for scripting etc."""
+        print("")
+        typ = ''
+        for c in line:
+            typ+=c
+            print(bc.err_format("[+] ","{}\r".format(typ)), end="")
+            time.sleep(0.05)
+        print("")
+
     def do_exit(self, line, sigint=None):
         """Leave the Blackfell Shell Framework,
         terminating all agents & listeners. (-y to force)"""

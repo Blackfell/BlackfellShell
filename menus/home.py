@@ -16,7 +16,7 @@ from menus import listeners as lnrs
 from menus import agents as agts
 from menus import modules as mod
 from common import bcolors as bc
-from menus import base
+from menus import base, demo
 
 class BSMainMenu(base.BlackfellShell):
     def __init__(self):
@@ -172,6 +172,19 @@ class BSMainMenu(base.BlackfellShell):
         print("")
         bc.blue_print('[-] ','Switch to an Agents context menu, to manage your active agents.')
         print("")
+
+    ################## DEMO ########################
+
+    def do_demo(self, line):
+        """Walkthrough BShell key functions within the interpreter"""
+        input_str = bc.warn_format("[-]", " This will run through a demo of the BlackfellShell for a couple of minutes, do you want to continue? [Y/n]:")
+        if '-y' not in line and input(input_str.format(line)).lower() not in ['y', 'yes', 'ye']:
+            return False
+        else:
+            demo.demo()
+
+
+
 
     ################# UTILS ########################
 

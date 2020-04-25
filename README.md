@@ -100,6 +100,22 @@ BS > help <command>
 
 To get help on a specific command.
 
+## How about a demo?
+
+There is a built in demo command in the home menu; if you run this command, you'll get a simple walkthrough of the very fundamentals of modules and how they're supposed to work.
+
+## Just get me started
+
+There is also an example resource file, packaged with the repo 'example.bs'; resource files are intended to function in a similar way to metasploit resource files - they allow you to automate the BlackfellShell at startup. You can call the BlackfellShell with the example resource file like this:
+
+```
+~$ blackfell.py -r example.bs
+```
+
+Once this file runs, you'll have a Windows and Linux Dropper that are both configured to talk to a localhost listener. If you run this dropper within 60 seconds of creation, the resource file will also automatically activate and interact with your agents.
+
+From there, hit help and remember tab completion!
+
 # How it work?
 
 Droppers and Listeners are special modules  in the BlackfellShell, a Listener listens and a Dropper calls back to its Listener and runs commands the Listener gives it. This means you can create a Listener, generate a load of Droppers for it, then drop them on target machines.
