@@ -1,10 +1,13 @@
-import time
+import time, os
 
 from common import bcolors as bc
 
 
 def demo():
     """Print a series of demo BShell commands to console"""
+
+    w, h = os.get_terminal_size()
+    w = 0.9*w #Scale for beauty
 
     bc.info("The BlackfellShell can be used to run any python module written for it, but the key functionality it allows is running agents.")
     time.sleep(5)
@@ -34,13 +37,21 @@ def demo():
             'info')
     print("")
     bc.info("Showing info for module:\n")
-    print("""Option               Value                                    Default                        Required?
-======================================================================================================
-exit_on_exec         True                                     True                           True
-message              None                                     None                           True
-num_prints           None                                     None                           True
-color                None                                     None                           False
-            """)
+    format_string = "{{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}}".format(
+            int(0.2*w), int(0.5*w), int(0.15*w), int(0.15*w))
+    #format_string = "{:<20} {:<40} {:<30} {:<10}"
+    underline = "=" * int(w)
+    bc.bold_print(format_string.format("Option", "Value", "Default", "Required?"), "")
+    bc.blue_print(underline, "")
+    printer =   [
+                    ['exit_on_exec','True','True','True'],
+                    ['message', 'None', 'None', 'True'],
+                    ['num_prints', 'None', 'None', 'True'],
+                    ['color', 'None', 'None', 'True']
+                ]
+    for p in printer:
+        print(format_string.format(p[0],p[1],p[2],p[3]))
+    print("")
     time.sleep(5)
     bc.info("Each option in the module can be set with the 'set' keyword")
     time.sleep(4)
@@ -54,13 +65,22 @@ color                None                                     None              
             'info')
     print("")
     bc.info("Showing info for module:\n")
-    print("""Option               Value                                    Default                        Required?
-======================================================================================================
-exit_on_exec         True                                     True                           True
-message              None                                     None                           True
-num_prints           None                                     None                           True
-color                red                                      None                           False
-            """)
+
+    format_string = "{{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}}".format(
+            int(0.2*w), int(0.5*w), int(0.15*w), int(0.15*w))
+    #format_string = "{:<20} {:<40} {:<30} {:<10}"
+    underline = "=" * int(w)
+    bc.bold_print(format_string.format("Option", "Value", "Default", "Required?"), "")
+    bc.blue_print(underline, "")
+    printer =   [
+                    ['exit_on_exec','True','True','True'],
+                    ['message', 'None', 'None', 'True'],
+                    ['num_prints', 'None', 'None', 'True'],
+                    ['color', 'red', 'None', 'True']
+                ]
+    for p in printer:
+        print(format_string.format(p[0],p[1],p[2],p[3]))
+    print("")
     time.sleep(4)
     bc.info("If you didn't like that, the reset keyword will set options back to default.")
     time.sleep(4)
@@ -72,13 +92,21 @@ color                red                                      None              
     print("")
     time.sleep(1)
     bc.info("Showing info for module:\n")
-    print("""Option               Value                                    Default                        Required?
-======================================================================================================
-exit_on_exec         True                                     True                           True
-message              None                                     None                           True
-num_prints           None                                     None                           True
-color                None                                     None                           False
-            """)
+    format_string = "{{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}}".format(
+            int(0.2*w), int(0.5*w), int(0.15*w), int(0.15*w))
+    #format_string = "{:<20} {:<40} {:<30} {:<10}"
+    underline = "=" * int(w)
+    bc.bold_print(format_string.format("Option", "Value", "Default", "Required?"), "")
+    bc.blue_print(underline, "")
+    printer =   [
+                    ['exit_on_exec','True','True','True'],
+                    ['message', 'None', 'None', 'True'],
+                    ['num_prints', 'None', 'None', 'True'],
+                    ['color', 'None', 'None', 'True']
+                ]
+    for p in printer:
+        print(format_string.format(p[0],p[1],p[2],p[3]))
+    print("")
     time.sleep(4)
     bc.info("You must set all required options.")
     time.sleep(4)
@@ -115,13 +143,21 @@ color                None                                     None              
     print("")
     time.sleep(1)
     bc.info("Showing info for module:\n")
-    print("""Option               Value                                    Default                        Required?
-======================================================================================================
-exit_on_exec         True                                     True                           True
-message              Hello, World.                            None                           True
-num_prints           8                                        None                           True
-color                red                                      None                           False
-            """)
+    format_string = "{{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}}".format(
+            int(0.2*w), int(0.5*w), int(0.15*w), int(0.15*w))
+    #format_string = "{:<20} {:<40} {:<30} {:<10}"
+    underline = "=" * int(w)
+    bc.bold_print(format_string.format("Option", "Value", "Default", "Required?"), "")
+    bc.blue_print(underline, "")
+    printer =   [
+                    ['exit_on_exec','True','True','True'],
+                    ['message', 'Hello, World.', 'None', 'True'],
+                    ['num_prints', '8', 'None', 'True'],
+                    ['color', 'red', 'None', 'True']
+                ]
+    for p in printer:
+        print(format_string.format(p[0],p[1],p[2],p[3]))
+    print("")
     time.sleep(5)
     bc.info("Now you're all configured, you can run the module with the 'execute' keyword")
     time.sleep(5)
@@ -141,7 +177,7 @@ color                red                                      None              
 
 
 def fake_type(prompt, string):
-    """Type characters to teh screen in a vaguely showy way"""
+    """Type characters to the screen in a vaguely showy way"""
 
     for i in string:
         prompt += i

@@ -104,6 +104,12 @@ To get help on a specific command.
 
 There is a built in demo command in the home menu; if you run this command, you'll get a simple walkthrough of the very fundamentals of modules and how they're supposed to work.
 
+```
+BS > demo
+```
+
+You'll be walked through an example module, why not run it yourself once you've done?
+
 ## Just get me started
 
 There is also an example resource file, packaged with the repo 'example.bs'; resource files are intended to function in a similar way to metasploit resource files - they allow you to automate the BlackfellShell at startup. You can call the BlackfellShell with the example resource file like this:

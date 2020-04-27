@@ -118,8 +118,12 @@ class BSUseModuleMenu(base.BlackfellShell):
 
         print("")
         bc.blue_print("[-] ", "Showing info for module:\n")
-        format_string = "{:<20} {:<40} {:<30} {:<10}"
-        underline = "=" * 102
+        w, h = os.get_terminal_size()
+        w=0.9*w     #Scale for beauty
+        format_string = "{{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}}".format(
+                int(0.2*w), int(0.5*w), int(0.15*w), int(0.15*w))
+        #format_string = "{:<20} {:<40} {:<30} {:<10}"
+        underline = "=" * int(w)
         bc.bold_print(format_string.format("Option", "Value", "Default", "Required?"), "")
         bc.blue_print(underline, "")
         '''

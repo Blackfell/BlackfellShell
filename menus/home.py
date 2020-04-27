@@ -82,8 +82,12 @@ class BSMainMenu(base.BlackfellShell):
             default = self.defaults[option] if option in self.defaults else None
             info_list.append([str(option), str(value), str(default)])
         bc.blue_print("[-] ", "Showing global idefault settings:\n")
-        format_string = "{:<25} {:<45} {:<10}"
-        underline = "=" * 83
+        w, h = os.get_terminal_size()
+        w = 0.9*w #Scale for beauty
+        format_string = "{{:<{}}} {{:<{}}} {{:<{}}}".format(
+                int(0.3*w), int(0.55*w), int(0.15*w))
+        #format_string = "{:<25} {:<45} {:<10}"
+        underline = "=" * int(w)
         bc.bold_print(format_string.format("Option", "Value", "Default"), "")
         bc.blue_print(underline, "")
         for option in info_list:

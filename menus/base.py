@@ -60,7 +60,10 @@ class BlackfellShell(cmd.Cmd):
         if line == 'EOF':
             if not self.q['read'].empty() and self.q['read'].get() == "RESOURCE":
                 self.q['write'].put("DONE")
-            time.sleep(self.resource_timeout)   #probably end of resource file, so wait
+                time.sleep(self.resource_timeout)   #probably end of resource file, so wait
+            else:
+                bc.err("EOF Received, emergency exiting.")
+                sys.exit(0)
         else:
             return super().onecmd(line)
 
@@ -86,8 +89,12 @@ class BlackfellShell(cmd.Cmd):
         """List out just listeners, including printing them out"""
 
         bc.green_print("\n[-] ", "Listeners:\n")
-        format_string = "{:<40} {:<20} {:<10} {:<20}"
-        underline = "=" * 100
+        w, h = os.get_terminal_size()
+        w = 0.9*w #Scale for beauty
+        format_string = "{{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}}".format(
+                int(0.35*w), int(0.2*w), int(0.1*w), int(0.35*w))
+        #format_string = "{:<40} {:<20} {:<10} {:<20}"
+        underline = "=" * int(w)
         bc.bold_print(format_string.format("Name", "Status", "Agents", "Info"), "")
         bc.blue_print(underline, "")
         for l in self.root_menu.listeners:
@@ -98,8 +105,12 @@ class BlackfellShell(cmd.Cmd):
         """List out just agents, including printing them out."""
 
         bc.green_print("\n[-] ", "Agents:\n")
-        format_string = "{:<30} {:<10} {:20} {:<10} {:<30}"
-        underline = "=" * 100
+        w, h = os.get_terminal_size()
+        w = 0.9*w #Scale for beauty
+        format_string = "{{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}} {{:<{}}}".format(
+                int(0.3*w), int(0.1*w), int(0.2*w), int(0.1*w), int(0.3*w))
+        #format_string = "{:<30} {:<10} {:20} {:<10} {:<30}"
+        underline = "=" * int(w)
         bc.bold_print(format_string.format("Name", "Activated", "Listener", "Status",  "Info"), "")
         bc.blue_print(underline, "")
         for l in self.root_menu.listeners:
