@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import cmd
+
 import os
 import glob
 import sys
@@ -10,6 +10,7 @@ import time
 import queue
 
 from common import bcolors as bc
+from common import cmd as cmd
 
 
 #Helper function for scrubbing file path matches

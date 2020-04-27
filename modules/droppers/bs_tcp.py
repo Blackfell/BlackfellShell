@@ -95,13 +95,14 @@ class BSModule(mod.BSModule):
             return False
         if (self.get_option('py2exe') and self.get_option('pyinstaller'))\
                 or ((not self.get_option('py2exe')) and (not self.get_option('pyinstaller'))):
-            bc.warn("You must pick either py2exe or pyinstaller\n p2e{}pi{}".format(\
+            bc.warn("You must pick either py2exe or pyinstaller\n py2exe : {} Pyinstaller: {}".format(
                     self.get_option('py2exe'), self.get_option('pyinstaller')))
             return False
 
         #Check platform
         if self.get_option('platform').lower() not in [ 'windows', 'linux']:
-            bc.warn("Platform {} invalid. Pick 'linux' or 'windows'.")
+            bc.warn("Platform {} invalid. Pick 'linux' or 'windows'.".format(
+                    self.get_option('platform')))
             return False
 
         return True

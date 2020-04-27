@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import cmd
 import os, sys
 import signal
 import argparse
@@ -15,8 +14,7 @@ from pynput import keyboard
 from menus import home
 from common import bcolors as bc
 
-def SigintHandler(SIG, FRM):
-    print("^C")
+    #print("Line : {}".format(line))
 
 def get_args():
     """Get arguments for the main CLI tool, blackfell shell"""
@@ -56,11 +54,7 @@ def main():
     colorama.init()     #Ansi escape codes in Windows!
     args = get_args()
     check_root(args.noconfirm)
-
-    #Add Ctrl C handling
-    original_sigint = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, SigintHandler)
-
+    
     ## Run the shell
     bs = home.BSMainMenu()
 
