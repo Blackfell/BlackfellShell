@@ -166,7 +166,7 @@ OS=$(get_OS)
 printf "${GRN}[-]${NC} - Base OS detected as : $OS\n"
 
 #Install al OS based packages
-InsPackages=("wine" "python3")
+InsPackages=("wine" "python3" "python3-pip")
 for package in ${InsPackages[@]}; do
   check_and_install $OS $package
 done
