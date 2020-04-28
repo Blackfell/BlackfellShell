@@ -15,7 +15,12 @@
 #python -m pip install -r requirements.txt
 
 get_OS() {
-  if [ -f /etc/os-release ]; then
+  if [ -f /etc/debian_version ]; then
+    # Older Debian/Ubuntu/etc.
+    OS="debian"
+    VER=$(cat /etc/debian_version)
+    ID_LIKE="debian"
+  elif [ -f /etc/os-release ]; then
     # freedesktop.org and systemd
     . /etc/os-release
     OS=$NAME
@@ -32,11 +37,6 @@ get_OS() {
     OS=$DISTRIB_ID
     VER=$DISTRIB_RELEASE
     ID_LIKE=$OS
-  elif [ -f /etc/debian_version ]; then
-    # Older Debian/Ubuntu/etc.
-    OS="debian"
-    VER=$(cat /etc/debian_version)
-    ID_LIKE="debian"
   else
     # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
     OS=$(uname -s)
