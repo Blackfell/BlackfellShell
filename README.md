@@ -56,6 +56,14 @@ PS C:\> python -m pip install -r requirements.txt
 
 Will get you all the setup required for Windows to Windows compilation.
 
+If you'd still like to cross-compile, it's possible to run the framework if you already have WSL enabled adn the Ubuntu package installed and configured. Ubuntu will need a Python3 installation and Python3-pip. If you meet these requirements already, simply running:
+
+```
+PS C:\> ubuntu -c 'python3 -m pip install -r requirements.txt'
+```
+
+Will allow you to cross-compile on Windows to Linux, without needing the setup script.
+
 ## On windows
 
 Setup is handled via a small PowerShell script. The script will chack (and install if missing) Python, Windows Subsystem For Linux, Ubuntu Bash and Python dependencies. It will speed up install significantly if you already have a WSL Ubuntu environment installed; you may wish to do this manually before you start, but it's not required.
