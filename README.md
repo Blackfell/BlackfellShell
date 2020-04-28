@@ -1,6 +1,6 @@
 # BlackfellShell
 
-A Python module runner & Implant management tool.
+A Python module runner & Implant management tool. Capable of cross-compliling and managing agents on Linux and Windows 10 (framework side); dropper exectuables can be run on various versions of Linux and Windows.
 
 # What it do?
 
@@ -18,11 +18,11 @@ BlackfellShell was written on Linux, but is designed to run on Windows too. Star
 git clone https://github.com/Blackfell/BlackfellShell
 ```
 
-Next, run the install script for your platform. The main reason you need to run the install scripts is to allow you to cross complile your droppers from Linux for Windows; this requires wine, which should 'just work' on Pen Testing Linux distributions like Kali Linux; the installer script will check!
+Next, for easy install, run the install script for your platform. The main reason you may want to run the install scripts is to allow you to cross complile your droppers; this requires wine or WSL on Windows 10.
 
 ## The No-Installer way
 
-Until the setup scripts are working (or if you just want to skip the scripts) you can run install as follows:
+If you just want to skip the scripts, you already have a Wine or WSL environment set up, you can run a simple install as follows:
 
 ```
 python -m pip install -r requirements.txt
