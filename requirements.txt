@@ -1,6 +1,6 @@
 pyyaml
 py2exe
-pyinstaller
+pyinstaller>=3.6
 pillow
 pyscreenshot
 packaging

