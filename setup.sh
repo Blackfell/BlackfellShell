@@ -171,6 +171,14 @@ for package in ${InsPackages[@]}; do
   check_and_install $OS $package
 done
 
+if [ "$OS" = "debian" ]
+  then
+    #Needs Wine fixes
+    sudo dpkg --add-architecture i386
+    sudo apt update
+    sudo apt install wine32
+fi
+
 #Next, we'll call the pip requirements, because we may have needed python first
 printf "${GRN}[-]${NC} - Installing Python dependencies\n"
 printf "${GRY}$(python3 -m pip install --upgrade pip 2>&1)${NC}"
@@ -181,7 +189,7 @@ printf "${GRN}[+]${NC} - Python dependencies installed\n"
 #Now Wine and python configuration
 
 #Check if wine can call python
-if [[ "$(wine py -3 -V 2>/dev/null)" = *"not found"* ]]
+if [[ "$(wine py -3 -V 2>/dev/null)" = *"not found"* ]] || [[ "$(wine py -3 -V 2>/dev/null)" = "" ]]
   then
     echo
     echo "Your Wine environment is missing Python 3."
@@ -223,5 +231,9 @@ echo
 printf "${GRY} $(wine 2>&1 py -3 -m pip install --upgrade pip) ${NC}\n"
 printf "${GRY} $(wine 2>&1  py -3 -m pip install -r requirements.txt) ${NC}\n"
 echo
+printf "${GRN}[+]${NC} - Adding ~/.local/bin to PATH.\n"
+echo
+echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.profile
+PATH=$PATH:$HOME/.local/bin
 printf "${GRN}[+]${NC} - Setup complete.\n"
 echo
