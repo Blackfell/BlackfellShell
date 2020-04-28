@@ -157,7 +157,7 @@ class BSModule(mod.BSModule):
         #Now Windows to linux
         elif sys.platform == 'win32' and platform.lower() == 'linux' and pyinstaller:
             if pyinstaller:
-                if not self.pyinstaller_wins_2_linux(LHOST, LPORT, out_dir, filename):
+                if not self.pyinstaller_win_2_linux(LHOST, LPORT, out_dir, filename):
                     bc.err("Failed to compile with py2exe. Check setup instructions for Ubuntu on WSL.")
                     return False
                 else:

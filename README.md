@@ -12,7 +12,7 @@ The main reason BlackfellShell was written was to run Agents; an Agent is a comb
 
 # Installation
 
-BlackfellShell is designed to run on Linux, but is not intentionally designed as such; it should be possible to run most funcitonality on Windows too. Start by cloning or downloading this repository:
+BlackfellShell was written on Linux, but is designed to run on Windows too. Start by cloning or downloading this repository:
 
 ```
 git clone https://github.com/Blackfell/BlackfellShell
@@ -46,26 +46,46 @@ Now you're ready to go!
 
 ### On Windows
 
-Cross compilation is under development using Windows Subsystem for Linux currently, so cross-compilation isn't currently supported. You'll be able to run Windows to Windows by simply running:
+Cross compilation uses Windows Subsystem for Linux, so cross-compilation only works on Windows 10, where this is enabled.
+
+If cross compiling isn't a concern for you, simply running:
 
 ```
-python -m pip install -r requirements.txt
+PS C:\> python -m pip install -r requirements.txt
 ```
 
-## On windows - Does not work yet
+Will get you all the setup required for Windows to Windows compilation.
 
-Run the setup script:
+## On windows
+
+Setup is handled via a small PowerShell script. The script will chack (and install if missing) Python, Windows Subsystem For Linux, Ubuntu Bash and Python dependencies. It will speed up install significantly if you already have a WSL Ubuntu environment installed; you may wish to do this manually before you start, but it's not required.
+
+To run the setup script, you'll first need to make sure you can run PowerShell scripts on your system; the following often works for a one-off script:
 
 ```
-PS C:\> ./setup.bat
+PS C:\> powershell -ExecutionPolicy ByPass
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All Rights Reserved.
+
+PS C:\>
 ```
 
-Then follow each prompt, installing Windows Subsystem For Linux, if you're interested in cross-compiling.
+After you're in a powershell script enabled prompt, simply type:
 
-## On Linux - Does not work yet.
+```
+PS C:\> ./setup.ps1
+```
+
+Then follow each prompt, installing Windows Subsystem For Linux, if you're interested in cross-compiling. The script will install the Ubuntu distribution and configure Python for you, you'll still have to do a fair bit of clicking through etc. and set up your Ubuntu environment once installed.
+
+The setup script will walk you through.
+
+## On Linux
 
 
-Run the setup script:
+Setup is managed via a bash scripts, The script will chack (and install if missing) Python, Wine and Python dependencies. It will speed up install significantly if you already have a wine and associated python environment installed; you may wish to do this manually before you start, but it's not required.
+
+To check and install required tools, simply run the setup script:
 
 ```
 ~$ ./setup.sh

@@ -153,4 +153,4 @@ ubuntu -c 'if [ -z ""$(command -v python3-pip)"" ]; then sudo apt update && sudo
 Prnt-Info "Installing Linux Python dependencies"
 ubuntu -c 'python3 -m pip install -r requirements.txt'
 #Linux path amendments to treat pip warning
-ubuntu -c echo "export PATH=$PATH:$HOME/.local/bin" >> ~/.bash_profile
+ubuntu -c 'echo "export PATH=$PATH:$HOME/.local/bin" >> ~/.bash_profile'

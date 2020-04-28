@@ -1,5 +1,6 @@
 *.pyc
 *.bs
+!example.bs
 *.swp
 BS-loot/*
 archive/*
