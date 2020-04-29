@@ -2,6 +2,8 @@
 
 A Python module runner & Implant management tool. Capable of cross-compliling and managing agents on Linux and Windows 10 (framework side); dropper exectuables can be run on various versions of Linux and Windows.
 
+![BlackfellShell Demo Gif](common/BlackfellShell.gif)
+
 # What it do?
 
 BlackfellShell is a Python framework deisgned to run and manage Python modules for CTFs and Pen Testing like activities. BlackfellShell drops you into an interactive prompt, which will let you configure and run Python scripts, with built in Agent functionality being the main function of the framework.
