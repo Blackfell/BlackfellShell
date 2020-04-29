@@ -18,7 +18,7 @@ A Listener can be configured with some simple host information; once a Listener 
 
 ![BlackfellShell Demo Gif - Creating Listeners and Droppers](../assets/BSF-1.gif?raw=true)
 
- Once an agent is running, modules may be sent on the sly from Listener to Dropper down an encrypted link, loading extra functionality into the target.
+ Once an agent is running, modules may be sent on the fly from Listener to Dropper down an encrypted link, loading extra functionality into the target.
 
 ![BlackfellShell Demo Gif - Loading Modules](../assets/BSF-2.gif?raw=true)
 
