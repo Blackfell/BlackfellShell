@@ -2,7 +2,7 @@
 
 A Python module runner & Implant management tool. Capable of cross-compliling and managing agents on Linux and Windows 10 (framework side); dropper exectuables can be run on various versions of Linux and Windows.
 
-![BlackfellShell Demo Gif](https://blackfell.net/assets/images/posts/BlackfellShell/BlackfellShell1.gif)
+![BlackfellShell Demo Gif](https://blackfell.net/assets/images/posts/BlackfellShell/BlackfellShell1.gif?raw=true)
 
 # What it do?
 
