@@ -2,7 +2,7 @@
 
 A Python module runner & Implant management tool. Capable of cross-compliling and managing agents on Linux and Windows 10 (framework side); dropper exectuables can be run on various versions of Linux and Windows.
 
-![BlackfellShell Demo Gif](https://blackfell.net/assets/images/posts/BlackfellShell/BlackfellShell-BIG-4.gif?raw=true)
+![BlackfellShell Demo Gif](../assets/BSF-1.gif?raw=true)
 
 # What it do?
 
@@ -10,21 +10,15 @@ BlackfellShell is a Python framework deisgned to run and manage Python modules f
 
 ## Agents?
 
-The main reason BlackfellShell was written was to run Agents; an Agent is a combination of a Listener and Dropper, the Dropper runs on a target machine and a Listener communicates with it and tells it that to do. Setting up a TCP listener in the BlackfellShell is simple:
+The main reason BlackfellShell was written was to run Agents; an Agent is a combination of a Listener and Dropper, the Dropper runs on a target machine and a Listener communicates with it and tells it that to do.
 
-![BlackfellShell Demo Gif](https://blackfell.net/assets/images/posts/BlackfellShell/BlackfellShell-BIG-1.gif?raw=true)
+A Listener can be configured with some simple host information; once a Listener is running, Droppers can be created by simple referencing the Listener and specifying the platform (Windows or Linux).
 
-Droppers can be configured simply by referencing the listener:
-
-![BlackfellShell Demo Gif](https://blackfell.net/assets/images/posts/BlackfellShell/BlackfellShell-BIG-2.gif?raw=true)
-
-Then the platform (Windows or Linux) must be specified, before executing the module:
-
-![BlackfellShell Demo Gif](https://blackfell.net/assets/images/posts/BlackfellShell/BlackfellShell-BIG-3.gif?raw=true)
+![BlackfellShell Demo Gif](../assets/BSF-1.gif?raw=true)
 
  Once you've created a Dropper, move it to a target machine adn run it, then start sending modules from Listener to Dropper down an encrypted link, loading extra functionality into the target.
 
- ![BlackfellShell Demo Gif](https://blackfell.net/assets/images/posts/BlackfellShell/BlackfellShell-BIG-4.gif?raw=true)
+![BlackfellShell Demo Gif](../assets/BSF-2.gif?raw=true)
 
 # Installation
 
