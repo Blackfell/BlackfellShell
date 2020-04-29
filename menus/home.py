@@ -228,7 +228,7 @@ class BSMainMenu(base.BlackfellShell):
             with open(self.global_options['RSA_KEY']) as f:
                 try:
                     key = RSA.import_key(f.read())
-                    bc.success("RSA Key {} valid. (TODO - really?)".format(self.global_options['RSA_KEY']))
+                    bc.success("RSA Key {} valid.".format(self.global_options['RSA_KEY']))
                 except Exception as e:
                     bc.err("Key: {} not valid : {}".format(self.global_options['RSA_KEY'], e))
                     self.generate_key()
