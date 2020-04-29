@@ -233,7 +233,7 @@ printf "${GRY} $(wine 2>&1  py -3 -m pip install -r requirements.txt) ${NC}\n"
 echo
 printf "${GRN}[+]${NC} - Adding ~/.local/bin to PATH.\n"
 echo
-echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.profile
+#echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.profile
 PATH=$PATH:$HOME/.local/bin
 printf "${GRN}[+]${NC} - Setup complete.\n"
 echo

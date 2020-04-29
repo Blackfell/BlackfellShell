@@ -54,9 +54,13 @@ def main():
     colorama.init()     #Ansi escape codes in Windows!
     args = get_args()
     check_root(args.noconfirm)
-    
+
     ## Run the shell
     bs = home.BSMainMenu()
+
+    if sys.platform=='linux':
+        #Setup PATH to point to requirements - usually in ~/.local/bin
+        os.environ['PATH']=os.environ['HOME']+'/.local/bin:' +os.environ['PATH']
 
     #Handle resource files
     if args.resource_file:
