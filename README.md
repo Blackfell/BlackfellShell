@@ -8,15 +8,17 @@ A Python module runner & Implant management tool. Capable of cross-compliling an
 
 BlackfellShell is a Python framework deisgned to run and manage Python modules for CTFs and Pen Testing like activities. BlackfellShell drops you into an interactive prompt, which will let you configure and run Python scripts, with built in Agent functionality being the main function of the framework.
 
+The BlackfellShell is for my learning and development, so the droppers all run with a visible console full of debug information and messages. This may change in future, but bear this in mind as you use the framework.
+
 ## Agents?
 
 The main reason BlackfellShell was written was to run Agents; an Agent is a combination of a Listener and Dropper, the Dropper runs on a target machine and a Listener communicates with it and tells it that to do.
 
-A Listener can be configured with some simple host information; once a Listener is running, Droppers can be created by simple referencing the Listener and specifying the platform (Windows or Linux).
+A Listener can be configured with some simple host information; once a Listener is running, Droppers can be created by simply referencing the Listener and specifying the platform (Windows or Linux). Once you've created a Dropper, move it to a target machine and run it,
 
 ![BlackfellShell Demo Gif](../assets/BSF-1.gif?raw=true)
 
- Once you've created a Dropper, move it to a target machine adn run it, then start sending modules from Listener to Dropper down an encrypted link, loading extra functionality into the target.
+ Once an agent is running, modules may be sent on the sly from Listener to Dropper down an encrypted link, loading extra functionality into the target.
 
 ![BlackfellShell Demo Gif](../assets/BSF-2.gif?raw=true)
 
@@ -28,7 +30,45 @@ BlackfellShell was written on Linux, but is designed to run on Windows too. Star
 git clone https://github.com/Blackfell/BlackfellShell
 ```
 
-Next, for easy install, run the install script for your platform. The main reason you may want to run the install scripts is to allow you to cross complile your droppers; this requires wine or WSL on Windows 10.
+Next, for easy install, run the install script for your platform. The main reason you may want to run the install scripts is to allow you to cross complile your droppers; this requires wine on Linux and WSL on Windows 10.
+
+## On windows
+
+Setup is handled via a small PowerShell script. The script will chack (and install if missing) Python, Windows Subsystem For Linux, Ubuntu Bash and Python dependencies. It will speed up install significantly if you already have a WSL Ubuntu environment installed; you may wish to do this manually before you start, but it's not required.
+
+To run the setup script, you'll first need to make sure you can run PowerShell scripts on your system; the following often works for a one-off script:
+
+```
+PS C:\> powershell -ExecutionPolicy ByPass
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All Rights Reserved.
+
+PS C:\>
+```
+
+After you're in a powershell script enabled prompt, simply type:
+
+```
+PS C:\> ./setup.ps1
+```
+
+Then follow each prompt, installing Windows Subsystem For Linux, if you're interested in cross-compiling. The script will install the Ubuntu distribution and configure Python for you, you'll still have to do a fair bit of clicking through etc. and set up your Ubuntu environment once installed.
+
+The setup script will walk you through.
+
+## On Linux
+
+
+Setup is managed via a bash scripts, The script will chack (and install if missing) Python, Wine and Python dependencies. It will speed up install significantly if you already have a wine and associated python environment installed; you may wish to do this manually before you start, but it's not required.
+
+To check and install required tools, simply run the setup script:
+
+```
+~$ ./setup.sh
+```
+
+Then follow each prompt, installing Wine and Python, if you're interested in cross-compiling.
+
 
 ## The No-Installer way
 
@@ -73,43 +113,6 @@ PS C:\> ubuntu -c 'python3 -m pip install -r requirements.txt'
 ```
 
 Will allow you to cross-compile on Windows to Linux, without needing the setup script.
-
-## On windows
-
-Setup is handled via a small PowerShell script. The script will chack (and install if missing) Python, Windows Subsystem For Linux, Ubuntu Bash and Python dependencies. It will speed up install significantly if you already have a WSL Ubuntu environment installed; you may wish to do this manually before you start, but it's not required.
-
-To run the setup script, you'll first need to make sure you can run PowerShell scripts on your system; the following often works for a one-off script:
-
-```
-PS C:\> powershell -ExecutionPolicy ByPass
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All Rights Reserved.
-
-PS C:\>
-```
-
-After you're in a powershell script enabled prompt, simply type:
-
-```
-PS C:\> ./setup.ps1
-```
-
-Then follow each prompt, installing Windows Subsystem For Linux, if you're interested in cross-compiling. The script will install the Ubuntu distribution and configure Python for you, you'll still have to do a fair bit of clicking through etc. and set up your Ubuntu environment once installed.
-
-The setup script will walk you through.
-
-## On Linux
-
-
-Setup is managed via a bash scripts, The script will chack (and install if missing) Python, Wine and Python dependencies. It will speed up install significantly if you already have a wine and associated python environment installed; you may wish to do this manually before you start, but it's not required.
-
-To check and install required tools, simply run the setup script:
-
-```
-~$ ./setup.sh
-```
-
-Then follow each prompt, installing Wine and Python, if you're interested in cross-compiling.
 
 ## Done?
 
