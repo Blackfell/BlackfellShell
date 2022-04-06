@@ -137,7 +137,7 @@ class BSAgentsMenu(base.BlackfellShell):
             agents = []
             for l in self.root_menu.listeners:
                 for a in l.agent_list:
-                    if a.isAlive() == 1 and a.active:
+                    if a.is_alive() == 1 and a.active:
                          agents.append(a)
             bc.blue_print("[+] ", "- Interacting with {} active agents".format(len(agents)))
             interact = intr.BSInteractMenu(self, agents)

@@ -1,5 +1,4 @@
 pyyaml
-py2exe
 pyinstaller>=3.6
 pillow
 pyscreenshot

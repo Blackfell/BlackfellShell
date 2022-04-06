@@ -161,7 +161,7 @@ class BSTCPListener(threading.Thread):
         for agent in self.agent_list:
             #agent.send_q.put('terminate')
             agent.join(self.terminate_timeout)
-            if agent.isAlive() == 1:
+            if agent.is_alive() == 1:
                 bc.err_print("[!] ", "- Could not elegantly kill Agent: {}, continuing.".format(agent.name))
                 bc.warn("Trying emergency kill method.")
                 agent._emergency_raise()
@@ -184,7 +184,7 @@ class BSTCPListener(threading.Thread):
                 a.kill_flag.set()
                 #print("I set it!")
                 agent.join(self.terminate_timeout)
-                if agent.isAlive() == 1:
+                if agent.is_alive() == 1:
                     bc.err("Could not terminate_agent: {}, continuing.".format(agent.name))
                 del(a)
 

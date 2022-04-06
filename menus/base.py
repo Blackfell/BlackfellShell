@@ -104,7 +104,7 @@ class BlackfellShell(cmd.Cmd):
         bc.bold_print(format_string.format("Name", "Status", "Agents", "Info"), "")
         bc.blue_print(underline, "")
         for l in self.root_menu.listeners:
-            print(format_string.format(l.name, 'Alive' if l.isAlive()==1 else 'Dead' , len(l.agent_list), str(l.LHOST) + ':' + str(l.LPORT)))
+            print(format_string.format(l.name, 'Alive' if l.is_alive()==1 else 'Dead' , len(l.agent_list), str(l.LHOST) + ':' + str(l.LPORT)))
         print("")
 
     def list_agents(self):
@@ -121,7 +121,7 @@ class BlackfellShell(cmd.Cmd):
         bc.blue_print(underline, "")
         for l in self.root_menu.listeners:
             for a in l.agent_list:
-                print(format_string.format(str(a.name), str(a.active), str(a.listener.name), 'Alive' if a.isAlive()==1 else 'Dead' , str(a.ip) + ":" + str(a.port)))
+                print(format_string.format(str(a.name), str(a.active), str(a.listener.name), 'Alive' if a.is_alive()==1 else 'Dead' , str(a.ip) + ":" + str(a.port)))
         print("")
 
     def help_list(self):
@@ -299,7 +299,7 @@ class BlackfellShell(cmd.Cmd):
             for l in self.root_menu.listeners:
                 l.terminate()
                 l.join(self.terminate_timeout)
-                if l.isAlive() == 1:
+                if l.is_alive() == 1:
                     bc.err_print("[!] ", "- Could not elegantly kill listener: {}, continuing.".format(l.name))
             bc.blue_print("[!] ", "- All Listeners killed.")
             time.sleep(0.2)
